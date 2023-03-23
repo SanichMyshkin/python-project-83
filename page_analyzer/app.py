@@ -5,5 +5,5 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    Hello = 'Hello, Im gay!'
-    return f"{Hello}"
+    hello = 'Hello, Im gay!'
+    return f"{hello}"
