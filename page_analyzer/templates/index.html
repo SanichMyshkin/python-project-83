@@ -1,32 +1,77 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Analyzer</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/944/944053.png" type="image/x-icon">
 </head>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark px-3" data-bs-theme="dark">
+  <a class="navbar-brand" href="/">Анализатор страниц</a>
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="/urls">Сайты</a>
+  </ul>
+</nav>
+
+
+
 <body>
-    <header>
-    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Анализатор страниц</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Сайты</a>
-        </li>
-      </ul>
+  <!-- 
+  <main class="flex-grow-1">
+
+      <h1></h1>
+
+        <div class="col-12 col-md-10 col-lg-8 mx-auto border rounded-3 bg-light p-5">
+          <h1 class="display-3">Анализатор страниц</h1>
+          <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
+          <form action="/urls " method="post" class="d-flex justify-content-center" required="">
+            <input type="text" name="url" placeholder="https://www.example.com" value=""
+              class="form-control form-control-lg">
+            <input type="submit" class="btn btn-primary  btn-lg ms-3 px-5 text-uppercase mx-3" value="Проверить">
+          </form>
+
     </div>
-  </div>
-    </nav>
-    </header>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    
+  </main>
+ -->
+
+  <main>
+    <h1></h1>
+    <div class="flex-grow-1">
+      <div class="col-12 col-md-10 col-lg-7 mx-auto border rounded-2 bg-secondary-subtle p-5">
+        <h1 class="display-4">Анализатор страниц</h1>
+        <p class="lead text-body-secondary">Бесплатно проверить сайт на SEO пригодность</p>
+        
+        <form action="/urls " method="post" class="d-flex justify-content-center" required="">
+          <input type="text" name="url" placeholder="https://www.example.com">
+          <input type="submit" class="btn btn-primary  btn-lg ms-3 px-5" value="Проверить">
+        </form>
+        
+      </div>
+    </div>
+  </main>
+
+
+
+  <div class="container-lg"></div>
+  <nav class="navbar fixed-bottom bg-body-tertiary">
+    <div class="container-lg">
+      <a class="navbar-brand mx-auto" href="https://github.com/SanichMakakich">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1920px-Octicons-mark-github.svg.png"
+          alt="Bootstrap" width="30" height="30">
+        <!-- About -->
+      </a>
+    </div>
+  </nav>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
 </body>
+
 </html>
