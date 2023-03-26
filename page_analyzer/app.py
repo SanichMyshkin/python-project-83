@@ -1,6 +1,6 @@
-from flask import Flask, render_template, get_flashed_messages, request, url_for, redirect
-import psycopg2
-import os
+from flask import Flask, render_template, request
+# import psycopg2
+# import os
 import validators
 
 # DATABASE_URL = os.getenv('DATABASE_URL')
