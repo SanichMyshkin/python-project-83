@@ -27,8 +27,8 @@
         <h1 class="display-4">Анализатор страниц</h1>
         <p class="lead text-body-secondary">Бесплатно проверить сайт на SEO пригодность</p>
         
-        <form action="/urls " method="post" class="d-flex justify-content-center" required="">
-          <input type="text" name="url" placeholder="https://www.example.com" class="form-control">
+        <form action="/urls" method="post" class="d-flex justify-content-center">
+          <input type="text" name="url" placeholder="https://www.example.com" class="form-control" value="{{ data.name|default('', true) }}">
           <input type="submit" class="btn btn-primary  btn-lg mx-3" value="Проверить">
         </form>
       </div>
