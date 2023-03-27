@@ -1,5 +1,6 @@
-# import psycopg2
-# import validators
+import psycopg2
+
+'''
 from datetime import datetime
 
 current_datetime = datetime.now()
@@ -12,11 +13,10 @@ print(current_datetime.hour)
 print(current_datetime.minute)
 print(current_datetime.second)
 print(current_datetime.microsecond)
-
 '''
+
 conn = psycopg2.connect('postgresql://postgres:@localhost:5432/database')
 
 cursor = conn.cursor()
 cursor.execute("SELECT * FROM urls")
 print(f'Server version:{cursor.fetchone()}')
-'''
