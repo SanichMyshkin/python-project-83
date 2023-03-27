@@ -19,6 +19,13 @@
   </ul>
 </nav>
 
+{% if errors %}
+<div class="alert alert-danger" role="alert">
+  {{ errors.name }}
+</div>
+{% endif %}
+
+
 <body>
   <main>
     <h1></h1>
