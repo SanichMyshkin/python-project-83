@@ -369,6 +369,17 @@ files = [
 ]
 
 [[package]]
+name = "pydotenv"
+version = "0.0.7"
+description = "A libray to write .env files"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pydotenv-0.0.7.tar.gz", hash = "sha256:5f6d78d3a7ed5124d7836bc1beeadd855dab4e2fdbea9338e6ff61dc1e46829f"},
+]
+
+[[package]]
 name = "pyflakes"
 version = "3.0.1"
 description = "passive checker of Python programs"
@@ -486,4 +497,4 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "fa903fcb989aaac8afd6f3cf3bfd194bea0dc67296faa85dbeeb6c4bec733ff1"
+content-hash = "4430ab41a4bc18143815557a8940a74b09cde1f97378b07dd7d0f86eeee12ffa"

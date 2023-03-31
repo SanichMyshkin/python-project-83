@@ -1,22 +1,12 @@
+import os
 import psycopg2
+from dotenv import load_dotenv
 
-'''
-from datetime import datetime
+load_dotenv()
 
-current_datetime = datetime.now()
-
-print(current_datetime)
-print(current_datetime.year)
-print(current_datetime.month)
-print(current_datetime.day)
-print(current_datetime.hour)
-print(current_datetime.minute)
-print(current_datetime.second)
-print(current_datetime.microsecond)
-'''
-
-conn = psycopg2.connect('postgresql://postgres:@localhost:5432/database')
-
+DATABASE_URL = os.getenv('DATABASE_URL')
+conn = psycopg2.connect(DATABASE_URL)
 cursor = conn.cursor()
-cursor.execute("SELECT * FROM urls")
-print(f'Server version:{cursor.fetchone()}')
+sql_query = f'''SELECT * FROM urls'''
+cursor.execute(sql_query)
+print(list(cursor))
