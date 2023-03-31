@@ -12,8 +12,6 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 
-
-
 @app.route('/', methods=['GET'])
 def index():
     message = get_flashed_messages(with_categories=True)
