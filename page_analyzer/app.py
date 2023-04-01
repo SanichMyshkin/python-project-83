@@ -49,11 +49,12 @@ def post_sites():
 
     sql_query = f'''INSERT INTO urls(name, created_at)
                     VALUES('{data['url']}','{current_datetime}')'''
-
+    max_query = 'SELECT MAX(id) FROM urls'
+    max_id = connect_to_db(max_query)
     insert_to_db(sql_query)
     flash("Страница успешно добавлена", 'success')
 
-    return redirect(url_for('get_sites'))
+    return redirect(url_for('id_sites', id=max_id[0][0]+1))
 
 
 @app.route("/urls/<int:id>", methods=["POST", "GET"])

@@ -20,12 +20,6 @@
 </nav>
 
 
-{% if errors %}
-
-{{ errors.name }}
-
-{% endif %}
-
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 <div class="alert alert-info" role="alert">
@@ -36,9 +30,52 @@
 {% endif %}
 {% endwith %}
 
+{% for element in data %}
+<div class="container-lg mt-3">
+    <h1>Сайт: {{element[1]}}</h1>
 
-<a class="info">{{ id }}</a>
-<a class="info">{{ data }}</a>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-nowrap" data-test="url">
+            <tbody>
+            <tr>
+                <td>ID</td>
+                <td>{{element[0]}}</td>
+            </tr>
+            <tr>
+                <td>Имя</td>
+                <td>{{element[1]}}</td>
+            </tr>
+            <tr>
+                <td>Дата создания</td>
+                <td>{{element[2]}}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h2 class="mt-5 mb-3">Проверки</h2>
+        <form method="post" action="/urls/1/checks">
+            <input type="submit" class="btn btn-primary" value="Запустить проверку">
+        </form>
+        <div>
+    <table class="table table-bordered table-hover mt-2" data-test="checks">
+      <tbody>
+    <tr>
+        <th>ID</th>
+        <th>Код ответа</th>
+        <th>h1</th>
+        <th>title</th>
+        <th>description</th>
+        <th>Дата создания</th>
+    </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+    </div>
+</div>
+{% endfor%}
 
 
 <nav class="navbar fixed-bottom bg-body-tertiary">

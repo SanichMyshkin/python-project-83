@@ -26,7 +26,31 @@
 {% endif %}
 
 
-<a class="info">{{ data }}</a>
+<div class="container-lg mt-3">
+    <h1>Сайты</h1>
+    <table class="table table-bordered table-hover text-nowrap" data-test="urls">
+        <tbody>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Последняя проверка</th>
+            <th>Код ответа</th>
+        </tr>
+        {%for element in data%}
+        <tr>
+            <td>{{element[0]}}</td>
+            <td>
+                <a href="/urls/{{element[0]}}">
+                    {{element[1]}}
+                </a>
+            </td>
+
+            <td>{{element[2]}}</td>
+            <td></td>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
 
 
 <nav class="navbar fixed-bottom bg-body-tertiary">
