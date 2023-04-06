@@ -45,25 +45,41 @@ def post_sites():
                                    data=data,
                                    errors=errors)
 
-    current_datetime = datetime.now()
+    current_datetime = datetime.today()
 
     sql_query = f'''INSERT INTO urls(name, created_at)
                     VALUES('{data['url']}','{current_datetime}')'''
     max_query = 'SELECT MAX(id) FROM urls'
-    max_id = connect_to_db(max_query)
     insert_to_db(sql_query)
+    max_id = connect_to_db(max_query)
     flash("Страница успешно добавлена", 'success')
-
-    return redirect(url_for('id_sites', id=max_id[0][0]+1))
+    return redirect(url_for('id_sites', id=max_id[0][0]))
 
 
 @app.route("/urls/<int:id>", methods=["POST", "GET"])
 def id_sites(id):
     message = get_flashed_messages(with_categories=True)
-    sql_query = f'''SELECT * FROM urls WHERE id={id}'''
+    url_id = f'''SELECT * FROM urls WHERE id={id}'''
+    data_of_url = connect_to_db(url_id)
 
-    responce = connect_to_db(sql_query)
+    url_id_check = f'''SELECT * FROM url_checks WHERE url_id={id}
+                       ORDER BY id DESC'''
+    data_cheking = connect_to_db(url_id_check)
+
     return render_template("url_id.html",
                            message=message,
                            id=id,
-                           data=responce)
+                           data=data_of_url,
+                           checks=data_cheking)
+
+
+@app.post('/urls/<int:id>/checks')
+def url_checks(id):
+    query_id = f'SELECT id, created_at FROM urls WHERE id={id}'
+    url_id = connect_to_db(query_id)
+    query_id = url_id[0][0]
+    query_data = datetime.today()
+    query = f'''INSERT INTO url_checks(url_id, created_at)
+                VALUES('{query_id}','{query_data}')'''
+    insert_to_db(query)
+    return redirect(url_for('id_sites', id=id))

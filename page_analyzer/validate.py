@@ -18,7 +18,7 @@ def is_valid(item):
     db = connect_to_db(resquest_all_db)
     existing_id = connect_to_db(request_existing_id)
 
-    if not item:
+    if not current_url:
         errors['name'] = "URL Обязателен"
         return errors
 
