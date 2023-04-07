@@ -9,7 +9,7 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 def connect_to_db(request, *args):
     try:
         conn = psycopg2.connect(DATABASE_URL)
-        print('Sql connected')
+        # print('Sql connected')
 
         with conn.cursor() as cursor:
             cursor.execute(request, args)
@@ -21,14 +21,14 @@ def connect_to_db(request, *args):
     finally:
         if conn:
             conn.close()
-            print("Connection Database closed")
+            # print("Connection Database closed")
 
 
 def insert_to_db(request):
     try:
         conn = psycopg2.connect(DATABASE_URL)
 
-        print("Sql connected")
+        # print("Sql connected")
 
         with conn.cursor() as cursor:
             cursor.execute(request)
@@ -40,4 +40,4 @@ def insert_to_db(request):
         if conn:
             conn.commit()
             conn.close()
-            print("Connection close")
+            # print("Connection close")

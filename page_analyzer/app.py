@@ -1,9 +1,12 @@
 from flask import Flask, render_template, \
     get_flashed_messages, flash, request, redirect, url_for
 import os
+
 from dotenv import load_dotenv
 from page_analyzer.connected import connect_to_db, insert_to_db
+from page_analyzer.checks_request import get_status
 from datetime import datetime
+
 from page_analyzer.validate import is_valid
 
 app = Flask(__name__)
@@ -25,10 +28,37 @@ def index():
 
 @app.route('/urls', methods=["GET"])
 def get_sites():
-    request = '''SELECT * from urls ORDER BY urls.id DESC'''
+    request = '''SELECT
+                   urls.id,
+                   urls.name,
+                   url_checks.created_at,
+                   url_checks.status_code
+                FROM
+                   urls
+                   LEFT JOIN
+                      (
+                         SELECT
+                            url_id,
+                            MAX(id) AS max_id
+                         FROM
+                            url_checks
+                         GROUP BY
+                            url_id
+                      )
+                      AS max_checks
+                      ON urls.id = max_checks.url_id
+                   LEFT JOIN
+                      url_checks
+                      ON max_checks.max_id = url_checks.id
+                      ORDER BY urls.id DESC'''
+
     responce = connect_to_db(request)
+
+    query = '''SELECT * from url_checks'''
+    status = connect_to_db(query)
     return render_template('urls.html',
-                           data=responce)
+                           data=responce,
+                           status=status)
 
 
 @app.route('/urls', methods=["POST"])
@@ -76,10 +106,18 @@ def id_sites(id):
 @app.post('/urls/<int:id>/checks')
 def url_checks(id):
     query_id = f'SELECT id, created_at FROM urls WHERE id={id}'
+
     url_id = connect_to_db(query_id)
     query_id = url_id[0][0]
     query_data = datetime.today()
-    query = f'''INSERT INTO url_checks(url_id, created_at)
-                VALUES('{query_id}','{query_data}')'''
+    status_code = get_status(id)
+
+    if status_code != 200:
+        flash('Произошла ошибка при проверке')
+        return redirect(url_for('id_sites', id=id))
+
+    query = f'''INSERT INTO url_checks(url_id, status_code, created_at)
+                VALUES('{query_id}','{status_code}','{query_data}')'''
     insert_to_db(query)
+
     return redirect(url_for('id_sites', id=id))

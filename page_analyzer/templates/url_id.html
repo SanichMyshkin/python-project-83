@@ -31,6 +31,11 @@
     {{ messages[0] }}
 </div>
 {% endif %}
+{% if messages == ['Произошла ошибка при проверке'] %}
+<div class="alert alert-danger" role="alert">
+    {{ messages[0] }}
+</div>
+{% endif %}
 {% endwith %}
 
 
@@ -44,15 +49,15 @@
             <tbody>
             <tr>
                 <td>ID</td>
-                <td>{{element[0]}}</td>
+                <td>{{ element[0]|default('') }}</td>
             </tr>
             <tr>
                 <td>Имя</td>
-                <td>{{element[1]}}</td>
+                <td>{{ element[1]|default('') }}</td>
             </tr>
             <tr>
                 <td>Дата создания</td>
-                <td>{{element[2]}}</td>
+                <td>{{ element[2]|default('') }}</td>
             </tr>
             </tbody>
         </table>
@@ -93,7 +98,6 @@
 
     </div>
 </div>
-
 
 
 <nav class="navbar fixed-bottom bg-body-tertiary">
