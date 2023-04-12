@@ -38,81 +38,86 @@
 {% endif %}
 {% endwith %}
 
+<body class="min-vh-100 d-flex flex-column">
+<main class="flex-grow-1">
 
-<div class="container-lg mt-3">
-    {% for element in data %}
-    <h1>Сайт: {{element[1]}}</h1>
-
-
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover text-nowrap" data-test="url">
-            <tbody>
-            <tr>
-                <td>ID</td>
-                <td>{{ element[0]|default('') }}</td>
-            </tr>
-            <tr>
-                <td>Имя</td>
-                <td>{{ element[1]|default('') }}</td>
-            </tr>
-            <tr>
-                <td>Дата создания</td>
-                <td>{{ element[2]|default('') }}</td>
-            </tr>
-            </tbody>
-        </table>
-
-        <h2 class="mt-5 mb-3">Проверки</h2>
-        <form method="post" action="/urls/{{element[0]}}/checks">
-            <input type="submit" class="btn btn-primary" value="Запустить проверку">
-        </form>
-        {% endfor%}
+{{url_id}}
+    <div class="container-lg mt-3">
+        {% for element in data %}
+        <h1>Сайт: {{element[1]}}</h1>
 
 
-        <div>
-            <table class="table table-bordered table-hover mt-2" data-test="url"> <!--data-test="checks" -->
-
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-nowrap" data-test="url">
                 <tbody>
                 <tr>
-                    <th>ID</th>
-                    <th>Код ответа</th>
-                    <th>h1</th>
-                    <th>title</th>
-                    <th>description</th>
-                    <th>Дата создания</th>
+                    <td>ID</td>
+                    <td>{{ element[0]|default('') }}</td>
                 </tr>
-                {% for element in checks %}
                 <tr>
-                    <td>{{element[0]}}</td>
-                    <td>{{element[2]}}</td>
-                    <td>{{element[3]}}</td>
-                    <td>{{element[4]}}</td>
-                    <td>{{element[5]}}</td>
-                    <td>{{element[6]}}</td>
+                    <td>Имя</td>
+                    <td>{{ element[1]|default('') }}</td>
                 </tr>
-                {% endfor%}
+                <tr>
+                    <td>Дата создания</td>
+                    <td>{{ element[2]|default('') }}</td>
+                </tr>
                 </tbody>
             </table>
 
+            <h2 class="mt-5 mb-3">Проверки</h2>
+            <form method="post" action="/urls/{{element[0]}}/checks">
+                <input type="submit" class="btn btn-primary" value="Запустить проверку">
+            </form>
+            {% endfor%}
+
+
+            <div>
+                <table class="table table-bordered table-hover mt-2" data-test="url"> <!--data-test="checks" -->
+
+                    <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <th>Код ответа</th>
+                        <th>h1</th>
+                        <th>title</th>
+                        <th>description</th>
+                        <th>Дата создания</th>
+                    </tr>
+                    {% for element in checks %}
+                    <tr>
+                        <td>{{ element[0]|default('') }}</td>
+                        <td>{{ element[2]|default('') }}</td>
+                        <td>{{ element[3]|default('') }}</td>
+                        <td>{{ element[4]|default('') }}</td>
+                        <td>{{ element[5]|default('') }}</td>
+                        <td>{{ element[6]|default('') }}</td>
+                    </tr>
+                    {% endfor%}
+                    </tbody>
+                </table>
+
+            </div>
+
         </div>
-
     </div>
-</div>
-
-
-<nav class="navbar fixed-bottom bg-body-tertiary">
+</main>
+</body>
+<footer class="border-top py-3 mt-5 flex-shrink-0">
     <div class="container-lg">
-        <a class="navbar-brand mx-auto" href="https://github.com/SanichMakakich">
-            <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1920px-Octicons-mark-github.svg.png"
-                    alt="Bootstrap" width="30" height="30">
-            <!-- About -->
-        </a>
+        <div class="text-center">
+            <a href="https://github.com/SanichMakakich" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1920px-Octicons-mark-github.svg.png"
+                     alt="Bootstrap" width="30" height="30">
+
+            </a>
+        </div>
     </div>
-</nav>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
         crossorigin="anonymous"></script>
-</body>
+
 
 </html>

@@ -26,8 +26,8 @@
 {% endif %}
 
 
-<body>
-<main>
+<body class="min-vh-100 d-flex flex-column">
+<main class="flex-grow-1">
     <h1></h1>
     <div class="flex-grow-1">
         <div class="col-12 col-md-10 col-lg-7 mx-auto border rounded-2 bg-secondary-subtle p-5">
@@ -42,22 +42,24 @@
         </div>
     </div>
 </main>
+</body>
 
-
-<div class="container-lg"></div>
-<nav class="navbar fixed-bottom bg-body-tertiary">
+<footer class="border-top fixed-bottom py-3 mt-5 flex-shrink-0">
     <div class="container-lg">
-        <a class="navbar-brand mx-auto" href="https://github.com/SanichMakakich">
-            <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1920px-Octicons-mark-github.svg.png"
-                    alt="Bootstrap" width="30" height="30">
-            <!-- About -->
-        </a>
+        <div class="text-center">
+            <a href="https://github.com/SanichMakakich" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1920px-Octicons-mark-github.svg.png"
+                     alt="Bootstrap" width="30" height="30">
+
+            </a>
+        </div>
     </div>
-</nav>
+</footer>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
         crossorigin="anonymous"></script>
-</body>
+
 
 </html>

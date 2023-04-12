@@ -17,6 +17,7 @@ psycopg2-binary = "^2.9.5"
 validators = "^0.20.0"
 pydotenv = "^0.0.7"
 requests = "^2.28.2"
+beautifulsoup4 = "^4.12.2"
 
 
 [build-system]

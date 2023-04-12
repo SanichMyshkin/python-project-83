@@ -1,12 +1,12 @@
 from flask import Flask, render_template, \
     get_flashed_messages, flash, request, redirect, url_for
-import os
 
+import os
 from dotenv import load_dotenv
-from page_analyzer.connected import connect_to_db, insert_to_db
-from page_analyzer.checks_request import get_status
 from datetime import datetime
 
+from page_analyzer.connected import connect_to_db, insert_to_db
+from page_analyzer.checks_request import get_status, get_data_html
 from page_analyzer.validate import is_valid
 
 app = Flask(__name__)
@@ -92,6 +92,9 @@ def id_sites(id):
     url_id = f'''SELECT * FROM urls WHERE id={id}'''
     data_of_url = connect_to_db(url_id)
 
+    if not data_of_url:
+        return render_template('error.html')
+
     url_id_check = f'''SELECT * FROM url_checks WHERE url_id={id}
                        ORDER BY id DESC'''
     data_cheking = connect_to_db(url_id_check)
@@ -105,19 +108,26 @@ def id_sites(id):
 
 @app.post('/urls/<int:id>/checks')
 def url_checks(id):
-    query_id = f'SELECT id, created_at FROM urls WHERE id={id}'
+    query_data = f'SELECT * FROM urls WHERE id={id}'
+    data_url = connect_to_db(query_data)
+    url_id = data_url[0][0]
+    url_name = data_url[0][1]
+    url_date = datetime.today()
+    url_status_code = get_status(id)
 
-    url_id = connect_to_db(query_id)
-    query_id = url_id[0][0]
-    query_data = datetime.today()
-    status_code = get_status(id)
-
-    if status_code != 200:
+    if url_status_code != 200:
         flash('Произошла ошибка при проверке')
         return redirect(url_for('id_sites', id=id))
 
-    query = f'''INSERT INTO url_checks(url_id, status_code, created_at)
-                VALUES('{query_id}','{status_code}','{query_data}')'''
-    insert_to_db(query)
+    data_html = get_data_html(url_name)
 
+    query = f'''INSERT INTO
+            url_checks(url_id, status_code, h1, title, description, created_at)
+            VALUES('{url_id}',
+                    '{url_status_code}',
+                    '{data_html["h1"]}',
+                    '{data_html["title"]}',
+                    '{data_html["description"]}',
+                    '{url_date}')'''
+    insert_to_db(query)
     return redirect(url_for('id_sites', id=id))

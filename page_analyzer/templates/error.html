@@ -21,50 +21,34 @@
 
 {% if errors %}
 <div class="alert alert-danger" role="alert">
-    {{ errors }}
+    {{ errors.name }}
 </div>
 {% endif %}
 
 <body class="min-vh-100 d-flex flex-column">
 <main class="flex-grow-1">
+    <div class="container-lg mt-3">
+      <h1>Страница не найдена</h1>
 
-<div class="container-lg mt-3">
-    <h1>Сайты</h1>
-    <table class="table table-bordered table-hover text-nowrap" data-test="urls">
-        <tbody>
-        <tr>
-            <th>ID</th>
-            <th>Имя</th>
-            <th>Последняя проверка</th>
-            <th>Код ответа</th>
-        </tr>
-        {%for element in data%}
-        <tr>
-            <td>{{ element[0] }}</td>
-            <td>
-                <a href="/urls/{{element[0]}}">
-                    {{element[1]}}
-                </a>
-            </td>
-            <td>{{ element[2] if element[2] is not none else '' }}</td>
-            <td>{{ element[3] if element[3] is not none else '' }}</td>
-            {%endfor%}
-        </tbody>
-    </table>
-</div>
+  <p>Здесь нет того, что вы ищете.</p>
+  <p><a href="/">Вернуться на главную</a></p>
+
+    </div>
 </main>
-</body>
 
+</body>
 <footer class="border-top fixed-bottom py-3 mt-5 flex-shrink-0">
     <div class="container-lg">
         <div class="text-center">
-            <a href="https://github.com/SanichMakakich">
+            <a href="https://github.com/SanichMakakich" target="_blank">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/1920px-Octicons-mark-github.svg.png"
                      alt="Bootstrap" width="30" height="30">
+
             </a>
         </div>
     </div>
 </footer>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
