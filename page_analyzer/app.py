@@ -67,9 +67,9 @@ def post_sites():
     errors = is_valid(data)
 
     if errors:
-        flash(f"{errors['name']}", 'alert alert-info')
+        flash(f"{errors['name']}", 'alert alert-info'), 422
         if errors.get('id'):
-            return redirect(url_for('id_sites', id=errors['id']))
+            return redirect(url_for('id_sites', id=errors['id'])), 422
         else:
             return render_template("index.html",
                                    data=data,
