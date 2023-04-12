@@ -67,13 +67,13 @@ def post_sites():
     errors = is_valid(data)
 
     if errors:
-        flash(f"{errors['name']}")
+        flash(f"{errors['name']}", 'alert alert-info')
         if errors.get('id'):
-            return redirect(url_for('id_sites', id=errors['id'])), 500
+            return redirect(url_for('id_sites', id=errors['id']))
         else:
             return render_template("index.html",
                                    data=data,
-                                   errors=errors), 500
+                                   errors=errors)
 
     current_datetime = datetime.today()
     current_url = get_domain(data['url'])
@@ -82,7 +82,8 @@ def post_sites():
     max_query = 'SELECT MAX(id) FROM urls'
     insert_to_db(sql_query)
     max_id = connect_to_db(max_query)
-    flash("Страница успешно добавлена", 'success')
+
+    flash("Страница успешно добавлена", 'alert alert-success')
     return redirect(url_for('id_sites', id=max_id[0][0]))
 
 
@@ -116,7 +117,7 @@ def url_checks(id):
     url_status_code = get_status(id)
 
     if url_status_code != 200:
-        flash('Произошла ошибка при проверке')
+        flash('Произошла ошибка при проверке', 'alert alert-danger')
         return redirect(url_for('id_sites', id=id))
 
     data_html = get_data_html(url_name)
@@ -130,4 +131,5 @@ def url_checks(id):
                     '{data_html["description"]}',
                     '{url_date}')'''
     insert_to_db(query)
+    flash('Страница успешно проверена', 'alert alert-success')
     return redirect(url_for('id_sites', id=id))

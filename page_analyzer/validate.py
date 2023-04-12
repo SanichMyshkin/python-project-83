@@ -33,7 +33,6 @@ def is_valid(item):
         if current_url == url[0]:
             errors['name'] = 'Страница уже существует'
             errors['id'] = existing_id[0][0]
-
     return errors
 
 

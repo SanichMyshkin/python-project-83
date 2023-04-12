@@ -19,8 +19,7 @@
     </ul>
 </nav>
 
-
-{% with messages = get_flashed_messages() %}
+<!-- {% with messages = get_flashed_messages() %}
 {% if messages == ['Страница уже существует'] %}
 <div class="alert alert-info" role="alert">
     {{ messages[0] }}
@@ -36,7 +35,14 @@
     {{ messages[0] }}
 </div>
 {% endif %}
-{% endwith %}
+{% endwith %}-->
+
+        {% if message %}
+            {% for category, mes in message %}
+                <div class="{{category}}" role="alert">{{ mes }}</div>
+            {% endfor %}
+        {% endif %}
+
 
 <body class="min-vh-100 d-flex flex-column">
 <main class="flex-grow-1">
