@@ -37,17 +37,18 @@
 {% endif %}
 {% endwith %}-->
 
-        {% if message %}
-            {% for category, mes in message %}
-                <div class="{{category}}" role="alert">{{ mes }}</div>
-            {% endfor %}
-        {% endif %}
-
+{% with message = get_flashed_messages(with_categories=True) %}
+{% if message %}
+{% for category,mes in message %}
+<div class="{{category}}" role="alert">{{ mes }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
 
 <body class="min-vh-100 d-flex flex-column">
 <main class="flex-grow-1">
 
-{{url_id}}
+    {{url_id}}
     <div class="container-lg mt-3">
         {% for element in data %}
         <h1>Сайт: {{element[1]}}</h1>

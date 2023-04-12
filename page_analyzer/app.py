@@ -1,5 +1,5 @@
 from flask import Flask, render_template, \
-    get_flashed_messages, flash, request, redirect, url_for
+    flash, request, redirect, url_for  # ,get_flashed_messages,
 
 import os
 from dotenv import load_dotenv
@@ -17,13 +17,14 @@ app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 @app.route('/', methods=['GET'])
 def index():
-    message = get_flashed_messages(with_categories=True)
+    # message = get_flashed_messages(with_categories=True)
     data = []
     errors = []
+    # flash("Страница успешно добавлена", 'alert alert-success')
     return render_template('index.html',
                            data=data,
-                           errors=errors,
-                           message=message)
+                           errors=errors)
+    # message=message)
 
 
 @app.route('/urls', methods=["GET"])
@@ -53,7 +54,6 @@ def get_sites():
                       ORDER BY urls.id DESC'''
 
     responce = connect_to_db(request)
-
     query = '''SELECT * from url_checks'''
     status = connect_to_db(query)
     return render_template('urls.html',
@@ -67,9 +67,9 @@ def post_sites():
     errors = is_valid(data)
 
     if errors:
-        flash(f"{errors['name']}", 'alert alert-info'), 422
+        flash(f"{errors['name']}", 'alert alert-info')
         if errors.get('id'):
-            return redirect(url_for('id_sites', id=errors['id'])), 422
+            return redirect(url_for('id_sites', id=errors['id']), code=302)
         else:
             return render_template("index.html",
                                    data=data,
@@ -84,12 +84,12 @@ def post_sites():
     max_id = connect_to_db(max_query)
 
     flash("Страница успешно добавлена", 'alert alert-success')
-    return redirect(url_for('id_sites', id=max_id[0][0]))
+    return redirect(url_for('id_sites', id=max_id[0][0]), code=302)
 
 
 @app.route("/urls/<int:id>", methods=["POST", "GET"])
 def id_sites(id):
-    message = get_flashed_messages(with_categories=True)
+    # message = get_flashed_messages(with_categories=True)
     url_id = f'''SELECT * FROM urls WHERE id={id}'''
     data_of_url = connect_to_db(url_id)
 
@@ -99,9 +99,7 @@ def id_sites(id):
     url_id_check = f'''SELECT * FROM url_checks WHERE url_id={id}
                        ORDER BY id DESC'''
     data_cheking = connect_to_db(url_id_check)
-
     return render_template("url_id.html",
-                           message=message,
                            id=id,
                            data=data_of_url,
                            checks=data_cheking)
