@@ -1,6 +1,7 @@
 import validators
 from page_analyzer.connected import connect_to_db
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 import os
 
 load_dotenv()
@@ -34,3 +35,9 @@ def is_valid(item):
             errors['id'] = existing_id[0][0]
 
     return errors
+
+
+def get_domain(url):
+    scheme = urlparse(url).scheme.lower()
+    hostname = urlparse(url).hostname.lower()
+    return f"{scheme}://{hostname}"

@@ -7,7 +7,7 @@ from datetime import datetime
 
 from page_analyzer.connected import connect_to_db, insert_to_db
 from page_analyzer.checks_request import get_status, get_data_html
-from page_analyzer.validate import is_valid
+from page_analyzer.validate import is_valid, get_domain
 
 app = Flask(__name__)
 load_dotenv()
@@ -76,9 +76,9 @@ def post_sites():
                                    errors=errors)
 
     current_datetime = datetime.today()
-
+    current_url = get_domain(data['url'])
     sql_query = f'''INSERT INTO urls(name, created_at)
-                    VALUES('{data['url']}','{current_datetime}')'''
+                    VALUES('{current_url}','{current_datetime}')'''
     max_query = 'SELECT MAX(id) FROM urls'
     insert_to_db(sql_query)
     max_id = connect_to_db(max_query)
