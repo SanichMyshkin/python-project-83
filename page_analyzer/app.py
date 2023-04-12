@@ -69,11 +69,11 @@ def post_sites():
     if errors:
         flash(f"{errors['name']}")
         if errors.get('id'):
-            return redirect(url_for('id_sites', id=errors['id']))
+            return redirect(url_for('id_sites', id=errors['id'])), 302
         else:
             return render_template("index.html",
                                    data=data,
-                                   errors=errors)
+                                   errors=errors), 302
 
     current_datetime = datetime.today()
     current_url = get_domain(data['url'])
