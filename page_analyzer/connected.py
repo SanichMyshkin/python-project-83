@@ -3,8 +3,8 @@ from dotenv import load_dotenv
 import psycopg2.extras
 import os
 
-load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
+load_dotenv()
 
 
 def connect_to_db():

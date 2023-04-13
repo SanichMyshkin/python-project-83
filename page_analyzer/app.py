@@ -1,19 +1,20 @@
+from dotenv import load_dotenv
 from flask import Flask, render_template, \
     flash, request, redirect, url_for
 
 import os
-# from dotenv import load_dotenv
 from datetime import datetime
-
 from page_analyzer.connected import get_id, get_all_db, \
     get_one_db, insert_to_db
 from page_analyzer.checks_request import get_status, get_data_html
 from page_analyzer.validate import is_valid, get_normalize_domain
 
+load_dotenv()
+
 app = Flask(__name__)
 
-secret_key = os.getenv('SECRET_KEY', b'_5#y$$"F4f8z\n\xec]/')
-app.secret_key = secret_key
+load_dotenv()
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 
 @app.route('/', methods=['GET'])
