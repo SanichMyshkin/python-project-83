@@ -10,11 +10,12 @@ from page_analyzer.connected import connect_to_db, \
 from page_analyzer.checks_request import get_status, get_data_html
 from page_analyzer.validate import is_valid, get_domain
 
-app = Flask(__name__)
-load_dotenv()
 
-secret_key = os.getenv('SECRET_KEY', b'_5#y$$"F4f8z\n\xec]/')
-app.secret_key = secret_key
+load_dotenv()
+SECRET_KEY = os.getenv('SECRET_KEY')
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = SECRET_KEY
 
 
 @app.route('/', methods=['GET'])
