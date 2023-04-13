@@ -35,8 +35,8 @@ def insert_to_db(request):
 
 
 def get_id(url_name):
-    with connect_to_db() as conn:
-        with conn.cursor() as cursor:
-            cursor.execute(f"SELECT id FROM urls WHERE name = '{url_name}'")
-            records = cursor.fetchone()
-            return str(*records) if records else None
+    conn = connect_to_db()
+    with conn.cursor() as cursor:
+        cursor.execute(f"SELECT id FROM urls WHERE name = '{url_name}'")
+        records = cursor.fetchone()
+        return str(*records) if records else None
