@@ -17,11 +17,11 @@ def connect_to_db():
 
 
 def get_all(request):
-    with connect_to_db() as conn:
-        with conn.cursor() as cursor:
-            cursor.execute(request)
-            response = cursor.fetchall()
-            return response
+    conn = connect_to_db()
+    with conn.cursor() as cursor:
+        cursor.execute(request)
+        response = cursor.fetchall()
+        return response
 
 
 def insert_to_db(request):
