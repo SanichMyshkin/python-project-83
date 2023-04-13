@@ -29,6 +29,6 @@ def is_valid(item):
 
 
 def get_normalize_domain(url):
-    scheme = urlparse(url).scheme.lower()
-    hostname = urlparse(url).hostname.lower()
+    scheme = urlparse(url).scheme
+    hostname = urlparse(url).hostname
     return f"{scheme}://{hostname}"

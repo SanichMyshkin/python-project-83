@@ -19,11 +19,13 @@
     </ul>
 </nav>
 
-{% if errors %}
-<div class="alert alert-danger" role="alert">
-    {{ errors.name }}
-</div>
+{% with message = get_flashed_messages(with_categories=True) %}
+{% if message %}
+{% for category,mes in message %}
+<div class="{{category}}" role="alert">{{ mes }}</div>
+{% endfor %}
 {% endif %}
+{% endwith %}
 
 
 <body class="min-vh-100 d-flex flex-column">

@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 from flask import Flask, render_template, \
     flash, request, redirect, url_for
-
 import os
 from datetime import datetime
 from page_analyzer.connected import get_id, get_all_db, \
@@ -55,16 +54,16 @@ def post_sites():
 
     id = get_id(current_url)
 
-    if id:
-        flash('Страница уже существует', 'alert alert-info')
-        return redirect(url_for('id_sites', id=id), code=302)
-
     errors = is_valid(data)
 
     if errors:
-        flash(f"{errors['name']}", 'alert alert-info')
+        flash(f"{errors['name']}", 'alert alert-danger')
         return render_template("index.html",
                                data=current_url)
+
+    if id:
+        flash('Страница уже существует', 'alert alert-info')
+        return redirect(url_for('id_sites', id=id), code=302)
 
     sql_query = f'''INSERT INTO urls(name, created_at)
                     VALUES('{current_url}','{datetime.today()}')'''
