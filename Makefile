@@ -12,6 +12,11 @@ debug:
 
 
 # Комады сборки проекта
+push:
+	git add .
+	git commit -m "fix"
+	git push
+
 package-install:
 	python3 -m pip install --user --force dist/*.whl
 

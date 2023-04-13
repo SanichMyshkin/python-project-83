@@ -11,7 +11,7 @@ from page_analyzer.validate import is_valid, get_normalize_domain
 
 app = Flask(__name__)
 load_dotenv()
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+secret_key = os.getenv('SECRET_KEY', b'_5#y$$"F4f8z\n\xec]/')
 
 
 @app.route('/', methods=['GET'])
