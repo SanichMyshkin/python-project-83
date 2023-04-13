@@ -12,7 +12,7 @@ debug:
 
 
 # Комады сборки проекта
-push:
+pu:
 	git add .
 	git commit -m "fix"
 	git push
