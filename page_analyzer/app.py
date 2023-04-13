@@ -61,7 +61,7 @@ def post_sites():
     if errors:
         flash(f"{errors['name']}", 'alert alert-danger')
         return render_template("index.html",
-                               data=current_url)
+                               data=current_url), 422
 
     if id:
         flash('Страница уже существует', 'alert alert-info')
