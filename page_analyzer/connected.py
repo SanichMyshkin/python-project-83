@@ -20,7 +20,8 @@ def connect_to_db():
 def get_all_db(query, *args):
     connection = psycopg2.connect(DATABASE_URL)
 
-    with connection.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+    with connection.cursor(cursor_factory=psycopg2.extras.DictCursor) \
+            as cursor:
         cursor.execute(query, args)
         response = cursor.fetchall()
 
@@ -51,7 +52,8 @@ def get_id(url_name):
 def get_one_db(query, *args):
     connection = psycopg2.connect(DATABASE_URL)
 
-    with connection.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+    with connection.cursor(cursor_factory=psycopg2.extras.DictCursor) \
+            as cursor:
         cursor.execute(query, args)
         response = cursor.fetchone()
 
