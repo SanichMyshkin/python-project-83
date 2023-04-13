@@ -72,7 +72,7 @@ def post_sites():
     insert_to_db(sql_query)
     flash("Страница успешно добавлена", 'alert alert-success')
 
-    query_id = f"SELECT id FROM urls WHERE name={current_url}"
+    query_id = f"SELECT id FROM urls WHERE name='{current_url}'"
     id = get_one_db(query_id)
 
     return redirect(url_for('id_sites', id=id), code=302)
