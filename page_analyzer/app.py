@@ -10,9 +10,8 @@ from page_analyzer.checks_request import get_status, get_data_html
 from page_analyzer.validate import is_valid, get_normalize_domain
 
 app = Flask(__name__)
-
 load_dotenv()
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 
 @app.route('/', methods=['GET'])
