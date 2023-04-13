@@ -16,6 +16,7 @@ def connect_to_db(request, *args):
 
     except Exception as _ex:
         print('Error while working with PSQL', _ex)
+    return conn
 
 
 def insert_to_db(request):
