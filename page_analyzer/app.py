@@ -65,7 +65,7 @@ def post_sites():
 
     if id:
         flash('Страница уже существует', 'alert alert-info')
-        return redirect(url_for('id_sites', id=id), code=302)
+        return redirect(url_for('id_sites', id=id))
 
     sql_query = f'''INSERT INTO urls(name, created_at)
                     VALUES('{current_url}','{datetime.today()}')'''
@@ -75,7 +75,7 @@ def post_sites():
     query_id = f"SELECT id FROM urls WHERE name='{current_url}'"
     id = get_one_db(query_id)
 
-    return redirect(url_for('id_sites', id=id[0]), code=302)
+    return redirect(url_for('id_sites', id=id[0]))
 
 
 @app.route("/urls/<int:id>", methods=["POST", "GET"])
