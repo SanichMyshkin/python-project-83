@@ -43,7 +43,7 @@ def insert_to_db(query, *args):
 def get_id(url_name):
     query = f"SELECT * FROM urls WHERE name = '{url_name}'"
 
-    response = get_one_db(query, url_name)
+    response = get_all_db(query, url_name)
     if response:
         return response['id']
     return None
