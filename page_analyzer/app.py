@@ -9,24 +9,21 @@ from page_analyzer.connected import connect_to_db, insert_to_db
 from page_analyzer.checks_request import get_status, get_data_html
 from page_analyzer.validate import is_valid, get_domain
 
-SECRET_KEY = os.getenv('SECRET_KEY')
 
 app = Flask(__name__)
 load_dotenv()
 
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+secret_key = os.getenv('SECRET_KEY', b'_5#y$$"F4f8z\n\xec]/')
+app.secret_key = secret_key
 
 
 @app.route('/', methods=['GET'])
 def index():
-    # message = get_flashed_messages(with_categories=True)
     data = []
     errors = []
-    # flash("Страница успешно добавлена", 'alert alert-success')
     return render_template('index.html',
                            data=data,
                            errors=errors)
-    # message=message)
 
 
 @app.route('/urls', methods=["GET"])
