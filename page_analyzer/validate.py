@@ -25,9 +25,10 @@ def is_valid(item):
 
     if not validators.url(current_url):
         errors['name'] = 'Некорректный URL'
-
+        return errors
     if len(current_url) > 255:
         errors['name'] = 'URL превышает 255 символов'
+        return errors
 
     for url in db:
         if current_url == url[0]:
