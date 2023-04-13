@@ -5,46 +5,35 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 
-from page_analyzer.connected import get_all, \
-    insert_to_db, get_id
+from page_analyzer.connected import get_id, get_all_db, \
+    get_one_db, insert_to_db
 from page_analyzer.checks_request import get_status, get_data_html
-from page_analyzer.validate import is_valid, get_domain
-
-
-load_dotenv()
-SECRET_KEY = os.getenv('SECRET_KEY')
+from page_analyzer.validate import is_valid, get_normalize_domain
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = SECRET_KEY
+
+load_dotenv()
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 
 
 @app.route('/', methods=['GET'])
 def index():
     data = []
-    errors = []
     return render_template('index.html',
-                           data=data,
-                           errors=errors)
+                           data=data)
 
 
 @app.route('/urls', methods=["GET"])
 def get_sites():
-    request = '''SELECT
+    query = '''SELECT
                    urls.id,
                    urls.name,
                    url_checks.created_at,
                    url_checks.status_code
-                FROM
-                   urls
-                   LEFT JOIN
+                FROM urls LEFT JOIN
                       (
-                         SELECT
-                            url_id,
-                            MAX(id) AS max_id
-                         FROM
-                            url_checks
-                         GROUP BY
-                            url_id
+                         SELECT url_id, MAX(id) AS max_id
+                         FROM url_checks GROUP BY url_id
                       )
                       AS max_checks
                       ON urls.id = max_checks.url_id
@@ -53,62 +42,65 @@ def get_sites():
                       ON max_checks.max_id = url_checks.id
                       ORDER BY urls.id DESC'''
 
-    responce = get_all(request)
-    query = '''SELECT * from url_checks'''
-    status = get_all(query)
+    responce = get_all_db(query)
     return render_template('urls.html',
-                           data=responce,
-                           status=status)
+                           data=responce)
 
 
 @app.route('/urls', methods=["POST"])
 def post_sites():
     data = request.form.to_dict()
-    errors = is_valid(data)
 
-    if errors:
-        flash(f"{errors['name']}", 'alert alert-info')
-        return render_template("index.html",
-                               data=data,
-                               errors=errors)
-    current_url = get_domain(data['url'])
+    url = data['url']
+
+    current_url = get_normalize_domain(url)
+
     id = get_id(current_url)
 
     if id:
         flash('Страница уже существует', 'alert alert-info')
         return redirect(url_for('id_sites', id=id), code=302)
 
-    current_datetime = datetime.today()
+    errors = is_valid(data)
+
+    if errors:
+        flash(f"{errors['name']}", 'alert alert-info')
+        return render_template("index.html",
+                               data=current_url)
+
     sql_query = f'''INSERT INTO urls(name, created_at)
-                    VALUES('{current_url}','{current_datetime}')'''
+                    VALUES('{current_url}','{datetime.today()}')'''
     insert_to_db(sql_query)
     flash("Страница успешно добавлена", 'alert alert-success')
-    id = get_id(current_url)
+
+    query_id = f"SELECT id FROM urls WHERE name={current_url}"
+    id = get_one_db(query_id)
+
     return redirect(url_for('id_sites', id=id), code=302)
 
 
 @app.route("/urls/<int:id>", methods=["POST", "GET"])
 def id_sites(id):
-    # message = get_flashed_messages(with_categories=True)
     url_id = f'''SELECT * FROM urls WHERE id={id}'''
-    data_of_url = get_all(url_id)
+    data_of_url = get_all_db(url_id)
 
     if not data_of_url:
         return render_template('error.html')
 
     url_id_check = f'''SELECT * FROM url_checks WHERE url_id={id}
                        ORDER BY id DESC'''
-    data_cheking = get_all(url_id_check)
+    data_check = get_all_db(url_id_check)
     return render_template("url_id.html",
                            id=id,
                            data=data_of_url,
-                           checks=data_cheking)
+                           checks=data_check)
 
 
 @app.post('/urls/<int:id>/checks')
 def url_checks(id):
     query_data = f'SELECT * FROM urls WHERE id={id}'
-    data_url = get_all(query_data)
+
+    data_url = get_all_db(query_data)
     url_id = data_url[0][0]
     url_name = data_url[0][1]
     url_date = datetime.today()

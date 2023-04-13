@@ -28,7 +28,7 @@ def is_valid(item):
                 errors['id'] = existing_id[0][0]'''
 
 
-def get_domain(url):
+def get_normalize_domain(url):
     scheme = urlparse(url).scheme.lower()
     hostname = urlparse(url).hostname.lower()
     return f"{scheme}://{hostname}"
