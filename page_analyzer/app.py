@@ -5,7 +5,8 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 
-from page_analyzer.connected import connect_to_db, insert_to_db, get_id, get_name
+from page_analyzer.connected import connect_to_db, \
+    insert_to_db, get_id
 from page_analyzer.checks_request import get_status, get_data_html
 from page_analyzer.validate import is_valid, get_domain
 
