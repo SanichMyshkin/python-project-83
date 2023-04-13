@@ -18,10 +18,11 @@ def connect_to_db():
 
 def get_all(request):
     conn = connect_to_db()
-    with conn.cursor() as cursor:
-        cursor.execute(request)
-        response = cursor.fetchall()
-        return response
+    if conn:
+        with conn.cursor() as cursor:
+            cursor.execute(request)
+            response = cursor.fetchall()
+            return response
 
 
 def insert_to_db(request):
@@ -36,7 +37,8 @@ def insert_to_db(request):
 
 def get_id(url_name):
     conn = connect_to_db()
-    with conn.cursor() as cursor:
-        cursor.execute(f"SELECT id FROM urls WHERE name = '{url_name}'")
-        records = cursor.fetchone()
-        return str(*records) if records else None
+    if conn:
+        with conn.cursor() as cursor:
+            cursor.execute(f"SELECT id FROM urls WHERE name = '{url_name}'")
+            records = cursor.fetchone()
+            return str(*records) if records else None
