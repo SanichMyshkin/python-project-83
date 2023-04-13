@@ -21,19 +21,17 @@ def is_valid(item):
 
     if not current_url:
         errors['name'] = "URL Обязателен"
-        return errors
 
     if not validators.url(current_url):
         errors['name'] = 'Некорректный URL'
-        return errors
     if len(current_url) > 255:
         errors['name'] = 'URL превышает 255 символов'
-        return errors
 
-    for url in db:
-        if current_url == url[0]:
-            errors['name'] = 'Страница уже существует'
-            errors['id'] = existing_id[0][0]
+    if db:
+        for url in db:
+            if current_url == url[0]:
+                errors['name'] = 'Страница уже существует'
+                errors['id'] = existing_id[0][0]
     return errors
 
 
