@@ -1,14 +1,13 @@
 from flask import Flask, render_template, \
-    flash, request, redirect, url_for  # ,get_flashed_messages,
+    flash, request, redirect, url_for
 
 import os
 from dotenv import load_dotenv
 from datetime import datetime
 
-from page_analyzer.connected import connect_to_db, insert_to_db
+from page_analyzer.connected import connect_to_db, insert_to_db, get_id, get_name
 from page_analyzer.checks_request import get_status, get_data_html
 from page_analyzer.validate import is_valid, get_domain
-
 
 app = Flask(__name__)
 load_dotenv()
@@ -67,23 +66,23 @@ def post_sites():
 
     if errors:
         flash(f"{errors['name']}", 'alert alert-info')
-        if errors.get('id'):
-            return redirect(url_for('id_sites', id=errors['id']), code=302)
-        else:
-            return render_template("index.html",
-                                   data=data,
-                                   errors=errors)
+        return render_template("index.html",
+                               data=data,
+                               errors=errors)
+    current_url = get_domain(data['url'])
+    id = get_id(current_url)
+
+    if id:
+        flash('Страница уже существует', 'alert alert-info')
+        return redirect(url_for('id_sites', id=id), code=302)
 
     current_datetime = datetime.today()
-    current_url = get_domain(data['url'])
     sql_query = f'''INSERT INTO urls(name, created_at)
                     VALUES('{current_url}','{current_datetime}')'''
-    max_query = 'SELECT MAX(id) FROM urls'
     insert_to_db(sql_query)
-    max_id = connect_to_db(max_query)
-
     flash("Страница успешно добавлена", 'alert alert-success')
-    return redirect(url_for('id_sites', id=max_id[0][0]), code=302)
+    id = get_id(current_url)
+    return redirect(url_for('id_sites', id=id), code=302)
 
 
 @app.route("/urls/<int:id>", methods=["POST", "GET"])
