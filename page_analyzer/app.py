@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime
 
-from page_analyzer.connected import connect_to_db, \
+from page_analyzer.connected import get_all, \
     insert_to_db, get_id
 from page_analyzer.checks_request import get_status, get_data_html
 from page_analyzer.validate import is_valid, get_domain
@@ -53,9 +53,9 @@ def get_sites():
                       ON max_checks.max_id = url_checks.id
                       ORDER BY urls.id DESC'''
 
-    responce = connect_to_db(request)
+    responce = get_all(request)
     query = '''SELECT * from url_checks'''
-    status = connect_to_db(query)
+    status = get_all(query)
     return render_template('urls.html',
                            data=responce,
                            status=status)
@@ -91,14 +91,14 @@ def post_sites():
 def id_sites(id):
     # message = get_flashed_messages(with_categories=True)
     url_id = f'''SELECT * FROM urls WHERE id={id}'''
-    data_of_url = connect_to_db(url_id)
+    data_of_url = get_all(url_id)
 
     if not data_of_url:
         return render_template('error.html')
 
     url_id_check = f'''SELECT * FROM url_checks WHERE url_id={id}
                        ORDER BY id DESC'''
-    data_cheking = connect_to_db(url_id_check)
+    data_cheking = get_all(url_id_check)
     return render_template("url_id.html",
                            id=id,
                            data=data_of_url,
@@ -108,7 +108,7 @@ def id_sites(id):
 @app.post('/urls/<int:id>/checks')
 def url_checks(id):
     query_data = f'SELECT * FROM urls WHERE id={id}'
-    data_url = connect_to_db(query_data)
+    data_url = get_all(query_data)
     url_id = data_url[0][0]
     url_name = data_url[0][1]
     url_date = datetime.today()

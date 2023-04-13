@@ -6,22 +6,27 @@ load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
-def connect_to_db(request, *args):
+def connect_to_db():
+    connection = None
     try:
-        conn = psycopg2.connect(DATABASE_URL)
-        with conn.cursor() as cursor:
-            cursor.execute(request, args)
-            response = cursor.fetchall()
-            return response
-
+        connection = psycopg2.connect(DATABASE_URL)
+        connection.autocommit = True
     except Exception as _ex:
         print('Error while working with PSQL', _ex)
-    return conn
+    return connection
+
+
+def get_all(request):
+    with connect_to_db() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(request)
+            response = cursor.fetchall()
+            return response
 
 
 def insert_to_db(request):
     try:
-        conn = psycopg2.connect(DATABASE_URL)
+        conn = connect_to_db()
         with conn.cursor() as cursor:
             cursor.execute(request)
             conn.commit()
@@ -30,15 +35,8 @@ def insert_to_db(request):
 
 
 def get_id(url_name):
-    conn = psycopg2.connect(DATABASE_URL)
-    with conn.cursor() as cursor:
-        cursor.execute(f"SELECT id FROM urls WHERE name = '{url_name}'")
-        records = cursor.fetchone()
-        return str(*records) if records else None
-
-
-def get_name(id):
-    conn = psycopg2.connect(DATABASE_URL)
-    with conn.cursor() as cursor:
-        cursor.execute(f"SELECT name FROM urls WHERE name = {id}")
-        return cursor.fetchone()
+    with connect_to_db() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(f"SELECT id FROM urls WHERE name = '{url_name}'")
+            records = cursor.fetchone()
+            return str(*records) if records else None
