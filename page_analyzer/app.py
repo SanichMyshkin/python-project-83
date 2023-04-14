@@ -113,7 +113,7 @@ def url_checks(id):
     query = f'''INSERT INTO
             url_checks(url_id, status_code, h1, title, description, created_at)
             VALUES('{url_id}',
-                    {url_status_code},
+                    '{url_status_code}',
                     '{data_html["h1"]}',
                     '{data_html["title"]}',
                     '{data_html["description"]}',
