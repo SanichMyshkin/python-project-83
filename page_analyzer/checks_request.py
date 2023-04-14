@@ -14,14 +14,16 @@ def get_status(id):
     return r.status_code
 
 
-def get_data_html(url_page):
+def get_data_html(url):
     data = {
         "h1": '',
         'title': '',
         'description': ''
     }
 
-    soup = BeautifulSoup(url_page.text, 'html.parser')
+    r = requests.get(url)
+    html_doc = r.text
+    soup = BeautifulSoup(html_doc, 'html.parser')
 
     if soup.h1:
         data['h1'] = soup.h1.text.strip()
