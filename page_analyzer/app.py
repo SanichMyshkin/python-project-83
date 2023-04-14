@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, \
     flash, request, redirect, url_for
 import os
+import requests
 from datetime import datetime
 from page_analyzer.connected import get_id, get_all_db, \
     get_one_db, insert_to_db
@@ -104,21 +105,20 @@ def url_checks(id):
     url_name = data_url[0][1]
     url_date = datetime.today()
     url_status_code = get_status(id)
-
     if url_status_code != 200:
         flash('Произошла ошибка при проверке', 'alert alert-danger')
         return redirect(url_for('id_sites', id=id))
+    else:
+        data_html = get_data_html(url_name)
 
-    data_html = get_data_html(url_name)
-
-    query = f'''INSERT INTO
-            url_checks(url_id, status_code, h1, title, description, created_at)
-            VALUES('{url_id}',
-                    {url_status_code},
-                    '{data_html["h1"]}',
-                    '{data_html["title"]}',
-                    '{data_html["description"]}',
-                    '{url_date}')'''
-    insert_to_db(query)
-    flash('Страница успешно проверена', 'alert alert-success')
-    return redirect(url_for('id_sites', id=id))
+        query = f'''INSERT INTO
+                url_checks(url_id, status_code, h1, title, description, created_at)
+                VALUES('{url_id}',
+                        200,
+                        '{data_html["h1"]}',
+                        '{data_html["title"]}',
+                        '{data_html["description"]}',
+                        '{url_date}')'''
+        insert_to_db(query)
+        flash('Страница успешно проверена', 'alert alert-success')
+        return redirect(url_for('id_sites', id=id))
