@@ -9,7 +9,8 @@ def get_status(id):
     try:
         r = requests.get(url_name[0][0])
     except Exception as _ex:
-        return _ex
+        print(_ex)
+        return 404
     return r.status_code
 
 
