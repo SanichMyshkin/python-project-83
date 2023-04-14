@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, \
     flash, request, redirect, url_for
 import os
-import requests
+# import requests
 from datetime import datetime
 from page_analyzer.connected import get_id, get_all_db, \
     get_one_db, insert_to_db
