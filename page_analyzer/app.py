@@ -6,7 +6,7 @@ import requests
 from datetime import datetime
 from page_analyzer.connected import get_id, get_all_db, \
     get_one_db, insert_to_db
-from page_analyzer.checks_request import get_status, get_data_html
+from page_analyzer.checks_request import get_data_html
 from page_analyzer.validate import is_valid, get_normalize_domain
 
 load_dotenv()
