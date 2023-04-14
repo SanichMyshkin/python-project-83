@@ -6,7 +6,7 @@ import requests
 from datetime import datetime
 from page_analyzer.connected import get_id, get_all_db, \
     get_one_db, insert_to_db
-from page_analyzer.checks_request import get_data_html
+from page_analyzer.checks_request import get_check
 from page_analyzer.validate import is_valid, get_normalize_domain
 
 load_dotenv()
@@ -98,30 +98,42 @@ def id_sites(id):
 
 @app.post('/urls/<int:id>/checks')
 def url_checks(id):
-    query_data = f'SELECT * FROM urls WHERE id={id}'
+    query_select = f'''SELECT * FROM urls WHERE id={id}'''
 
-    data_url = get_all_db(query_data)
+    data_url = get_all_db(query_select)
     url_id = data_url[0][0]
     url_name = data_url[0][1]
     url_date = datetime.today()
-    # url_status_code = get_status(id)
+
     try:
         requests_url = requests.get(url_name)
-        url_status_code = requests_url.status_code
-    except requests.RequestException:
+    except Exception as _ex:
+        print(_ex)
         flash('Произошла ошибка при проверке', 'alert alert-danger')
         return redirect(url_for('id_sites', id=id))
 
-    data_html = get_data_html(url_name)
+    else:
+        result_check = get_check(requests_url)
 
-    query = f'''INSERT INTO
-            url_checks(url_id, status_code, h1, title, description, created_at)
-            VALUES('{url_id}',
-                    '{url_status_code}',
-                    '{data_html["h1"]}',
-                    '{data_html["title"]}',
-                    '{data_html["description"]}',
-                    '{url_date}')'''
-    insert_to_db(query)
-    flash('Страница успешно проверена', 'alert alert-success')
-    return redirect(url_for('id_sites', id=id))
+        query_insert = '''
+                               INSERT INTO url_checks (
+                               url_id,
+                               status_code,
+                               h1,
+                               title,
+                               description,
+                               created_at)
+                               VALUES (%s, %s, %s, %s, %s, %s)
+                               '''
+
+        insert_to_db(
+            query_insert,
+            url_id,
+            result_check['status_code'],
+            result_check['h1'],
+            result_check['title'],
+            result_check['description'],
+            url_date
+        )
+        flash('Страница успешно проверена', 'alert alert-success')
+        return redirect(url_for('id_sites', id=id))
