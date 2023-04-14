@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, \
     flash, request, redirect, url_for
 import os
+import requests
 from datetime import datetime
 from page_analyzer.connected import get_id, get_all_db, \
     get_one_db, insert_to_db
@@ -103,8 +104,11 @@ def url_checks(id):
     url_id = data_url[0][0]
     url_name = data_url[0][1]
     url_date = datetime.today()
-    url_status_code = get_status(id)
-    if url_status_code != 200:
+    # url_status_code = get_status(id)
+    try:
+        requests_url = requests.get(url_name)
+        url_status_code = requests_url.status_code
+    except requests.RequestException:
         flash('Произошла ошибка при проверке', 'alert alert-danger')
         return redirect(url_for('id_sites', id=id))
 
