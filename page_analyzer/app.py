@@ -20,7 +20,7 @@ app.config['SECRET_KEY'] = SECRET_KEY
 def index():
     data = []
     return render_template('index.html',
-                           data=data)
+                           data=data), 200
 
 
 @app.route('/urls', methods=["GET"])
@@ -85,7 +85,7 @@ def id_sites(id):
     data_of_url = get_all_db(url_id)
 
     if not data_of_url:
-        return render_template('error.html')
+        return render_template('error.html'), 200
 
     url_id_check = f'''SELECT * FROM url_checks WHERE url_id={id}
                        ORDER BY id DESC'''
@@ -111,7 +111,7 @@ def url_checks(id):
         url_status_code = requests_url.status_code
     except requests.RequestException:
         flash('Произошла ошибка при проверке', 'alert alert-danger')
-        return redirect(url_for('id_sites', id=id))
+        return redirect(url_for('id_sites', id=id, code=422))
 
     data_html = get_data_html(url_name)
 
