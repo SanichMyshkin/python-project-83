@@ -1,5 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
+from page_analyzer.connected import get_all_db
+
+
+def get_status(id):
+    url = f"SELECT name FROM urls WHERE id={id}"
+    url_name = get_all_db(url)
+    try:
+        r = requests.get(url_name[0][0])
+    except Exception as _ex:
+        return _ex
+    return r.status_code
 
 
 def get_data_html(url):
