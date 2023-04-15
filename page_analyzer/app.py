@@ -109,6 +109,9 @@ def url_checks(id):
     try:
         requests_url = requests.get(url_name)
         url_status_code = requests_url.status_code
+        if url_status_code != 200:
+            flash('Произошла ошибка при проверке', 'alert alert-danger')
+            return redirect(url_for('id_sites', id=id, code=422))
     except requests.RequestException:
         flash('Произошла ошибка при проверке', 'alert alert-danger')
         return redirect(url_for('id_sites', id=id, code=422))
