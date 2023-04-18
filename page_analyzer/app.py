@@ -57,7 +57,7 @@ def post_sites():
 
     current_url = get_normalize_domain(url)
 
-    id = get_id(connection,current_url)
+    id = get_id(connection, current_url)
 
     errors = is_valid(data)
 
