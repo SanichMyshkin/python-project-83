@@ -76,9 +76,9 @@ def post_sites():
     flash("Страница успешно добавлена", 'alert alert-success')
 
     query_id = f"SELECT id FROM urls WHERE name='{current_url}'"
-    id = get_all_db(connection, query_id)
+    id = get_all_db(connection, query_id)[0][0]
 
-    return redirect(url_for('id_sites', id=id[0]))
+    return redirect(url_for('id_sites', id=id))
 
 
 @app.route("/urls/<int:id>", methods=["POST", "GET"])
