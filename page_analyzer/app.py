@@ -5,7 +5,7 @@ import os
 
 from datetime import datetime
 from page_analyzer.connected import get_all_db, \
-    insert_to_db, connect_to_db
+    insert_to_db, connect_to_db, get_id
 from page_analyzer.checks_request import get_data_html, get_status
 from page_analyzer.validate import is_valid, get_normalize_domain
 
@@ -57,8 +57,7 @@ def post_sites():
 
     current_url = get_normalize_domain(url)
 
-    id_query = f"SELECT * FROM urls WHERE name = '{current_url}'"
-    id = get_all_db(connection, id_query)[0]
+    id = get_id(connection,current_url)
 
     errors = is_valid(data)
 

@@ -45,9 +45,9 @@ def insert_to_db(connection, query):
         # connection.close()
 
 
-def get_id(url_name):
+def get_id(conn, url_name):
     query = f"SELECT * FROM urls WHERE name = '{url_name}'"
-    response = get_one_db(query)
+    response = get_one_db(conn, query)
     if response:
-        return response['id']
+        return response[0]
     return None
