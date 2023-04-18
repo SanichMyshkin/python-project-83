@@ -4,7 +4,7 @@ from flask import Flask, render_template, \
 import os
 
 from datetime import datetime
-from page_analyzer.connected import get_id, get_all_db, \
+from page_analyzer.connected import get_all_db, \
     insert_to_db, connect_to_db
 from page_analyzer.checks_request import get_data_html, get_status
 from page_analyzer.validate import is_valid, get_normalize_domain
