@@ -5,7 +5,7 @@ import os
 
 from datetime import datetime
 from page_analyzer.connected import get_id, get_all_db, \
-    get_one_db, insert_to_db
+    insert_to_db, connect_to_db
 from page_analyzer.checks_request import get_data_html, get_status
 from page_analyzer.validate import is_valid, get_normalize_domain
 
@@ -14,6 +14,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
+
+connection = connect_to_db()
 
 
 @app.route('/', methods=['GET'])
@@ -42,7 +44,7 @@ def get_sites():
                       ON max_checks.max_id = url_checks.id
                       ORDER BY urls.id DESC'''
 
-    responce = get_all_db(query)
+    responce = get_all_db(connection, query)
     return render_template('urls.html',
                            data=responce)
 
@@ -55,7 +57,8 @@ def post_sites():
 
     current_url = get_normalize_domain(url)
 
-    id = get_id(current_url)
+    id_query = f"SELECT * FROM urls WHERE name = '{current_url}'"
+    id = get_all_db(connection, id_query)[0]
 
     errors = is_valid(data)
 
@@ -70,11 +73,11 @@ def post_sites():
 
     sql_query = f'''INSERT INTO urls(name, created_at)
                     VALUES('{current_url}','{datetime.today()}')'''
-    insert_to_db(sql_query)
+    insert_to_db(connection, sql_query)
     flash("Страница успешно добавлена", 'alert alert-success')
 
     query_id = f"SELECT id FROM urls WHERE name='{current_url}'"
-    id = get_one_db(query_id)
+    id = get_all_db(connection, query_id)
 
     return redirect(url_for('id_sites', id=id[0]))
 
@@ -82,14 +85,14 @@ def post_sites():
 @app.route("/urls/<int:id>", methods=["POST", "GET"])
 def id_sites(id):
     url_id = f'''SELECT * FROM urls WHERE id={id}'''
-    data_of_url = get_all_db(url_id)
+    data_of_url = get_all_db(connection, url_id)
 
     if not data_of_url:
         return render_template('error.html'), 200
 
     url_id_check = f'''SELECT * FROM url_checks WHERE url_id={id}
                        ORDER BY id DESC'''
-    data_check = get_all_db(url_id_check)
+    data_check = get_all_db(connection, url_id_check)
     return render_template("url_id.html",
                            id=id,
                            data=data_of_url,
@@ -99,12 +102,11 @@ def id_sites(id):
 @app.post('/urls/<int:id>/checks')
 def url_checks(id):
     query_select = f'''SELECT * FROM urls WHERE id={id}'''
-
-    data_url = get_all_db(query_select)
+    data_url = get_all_db(connection, query_select)
     url_id = data_url[0][0]
     url_name = data_url[0][1]
     url_date = datetime.today()
-    url_status_code = get_status(id)
+    url_status_code = get_status(connection, id)
     if url_status_code != 200:
         flash('Произошла ошибка при проверке', 'alert alert-danger')
         return redirect(url_for('id_sites', id=id, code=422))
@@ -119,6 +121,6 @@ def url_checks(id):
                     '{data_html["title"]}',
                     '{data_html["description"]}',
                     '{url_date}')'''
-    insert_to_db(query)
+    insert_to_db(connection, query)
     flash('Страница успешно проверена', 'alert alert-success')
     return redirect(url_for('id_sites', id=id))

@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup
 from page_analyzer.connected import get_all_db
 
 
-def get_status(id):
+def get_status(con, id):
     url = f"SELECT name FROM urls WHERE id={id}"
-    url_name = get_all_db(url)
+    url_name = get_all_db(con, url)
     try:
         r = requests.get(url_name[0][0])
     except Exception as _ex:

@@ -17,46 +17,37 @@ def connect_to_db():
     return connection
 
 
-def get_all_db(query, *args):
-    connection = psycopg2.connect(DATABASE_URL)
-
-    with connection.cursor(cursor_factory=psycopg2.extras.DictCursor) \
-            as cursor:
-        cursor.execute(query, args)
+def get_all_db(connection, query):
+    with connection.cursor() as cursor:
+        cursor.execute(query)
         response = cursor.fetchall()
 
-        connection.close()
+        # connection.close()
 
         return response
 
 
-def insert_to_db(query, *args):
-    connection = psycopg2.connect(DATABASE_URL)
-
+def get_one_db(connection, query):
     with connection.cursor() as cursor:
-        cursor.execute(query, (args))
+        cursor.execute(query)
+        response = cursor.fetchone()
+
+        # connection.close()
+
+        return response
+
+
+def insert_to_db(connection, query):
+    with connection.cursor() as cursor:
+        cursor.execute(query)
 
         connection.commit()
-        connection.close()
+        # connection.close()
 
 
 def get_id(url_name):
     query = f"SELECT * FROM urls WHERE name = '{url_name}'"
-
-    response = get_one_db(query, url_name)
+    response = get_one_db(query)
     if response:
         return response['id']
     return None
-
-
-def get_one_db(query, *args):
-    connection = psycopg2.connect(DATABASE_URL)
-
-    with connection.cursor(cursor_factory=psycopg2.extras.DictCursor) \
-            as cursor:
-        cursor.execute(query, args)
-        response = cursor.fetchone()
-
-        connection.close()
-
-        return response
