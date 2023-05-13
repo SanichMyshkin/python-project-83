@@ -1,5 +1,3 @@
-
-
 def get_all_db(connection, query):
     with connection.cursor() as cursor:
         cursor.execute(query)
