@@ -20,11 +20,11 @@
 </nav>
 
 {% with message = get_flashed_messages(with_categories=True) %}
-{% if message %}
-{% for category,mes in message %}
-<div class="{{category}}" role="alert">{{ mes }}</div>
-{% endfor %}
-{% endif %}
+    {% if message %}
+        {% for category,mes in message %}
+            <div class="{{category}}" role="alert">{{ mes }}</div>
+        {% endfor %}
+    {% endif %}
 {% endwith %}
 
 
