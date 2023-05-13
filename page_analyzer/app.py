@@ -11,7 +11,6 @@ from page_analyzer.connected import get_connection
 from page_analyzer.checks_request import get_data_html, get_status
 from page_analyzer.validate import is_valid, get_normalize_domain
 
-
 app = Flask(__name__)
 load_dotenv()
 app.secret_key = os.getenv("SECRET_KEY")
