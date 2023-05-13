@@ -15,7 +15,6 @@ def create_connection(*args, **kwargs):
 
 
 def create_pool(min_conn=1, max_conn=5):
-    """Create connection for work with PostgresSQL"""
     return pool.SimpleConnectionPool(minconn=min_conn,
                                      maxconn=max_conn,
                                      connection_factory=create_connection,
@@ -28,7 +27,6 @@ def create_pool(min_conn=1, max_conn=5):
 
 @contextmanager
 def get_connection():
-    """Get connection from pool or error if connection doesn't work"""
     conn = None
     try:
         conn = conn_pool.getconn()
