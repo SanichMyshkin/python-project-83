@@ -4,7 +4,10 @@ from flask import Flask, render_template, \
 import os
 
 from datetime import datetime
+from page_analyzer.models.database_tools import get_all_db,\
+    insert_to_db, get_id
 from page_analyzer.connected import connect_to_db
+
 from page_analyzer.checks_request import get_data_html, get_status
 from page_analyzer.validate import is_valid, get_normalize_domain
 
@@ -122,39 +125,3 @@ def url_checks(id):
     insert_to_db(connection, query)
     flash('Страница успешно проверена', 'alert alert-success')
     return redirect(url_for('id_sites', id=id))
-
-
-def get_all_db(connection, query):
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        response = cursor.fetchall()
-
-        # connection.close()
-
-        return response
-
-
-def get_one_db(connection, query):
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        response = cursor.fetchone()
-
-        # connection.close()
-
-        return response
-
-
-def insert_to_db(connection, query):
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-
-        connection.commit()
-        # connection.close()
-
-
-def get_id(conn, url_name):
-    query = f"SELECT * FROM urls WHERE name = '{url_name}'"
-    response = get_one_db(conn, query)
-    if response:
-        return response[0]
-    return None
