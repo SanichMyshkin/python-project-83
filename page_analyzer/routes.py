@@ -5,33 +5,29 @@ from page_analyzer.checks_request import get_status
 
 
 def get_all_url():
-    query = '''SELECT
-                   urls.id,
-                   urls.name,
-                   url_checks.created_at,
-                   url_checks.status_code
-                FROM urls LEFT JOIN
-                      (
-                         SELECT url_id, MAX(id) AS max_id
-                         FROM url_checks GROUP BY url_id
-                      )
-                      AS max_checks
-                      ON urls.id = max_checks.url_id
-                   LEFT JOIN
-                      url_checks
-                      ON max_checks.max_id = url_checks.id
-                      ORDER BY urls.id DESC'''
+    query = '''SELECT urls.id, urls.name, url_checks.created_at, url_checks.status_code
+                            FROM urls LEFT JOIN (
+                                SELECT DISTINCT ON (url_id) url_id, created_at, status_code
+                                FROM url_checks
+                                ORDER BY url_id, created_at DESC) AS url_checks ON urls.id = url_checks.url_id
+                            ORDER BY urls.id DESC'''
+    # как разделить этот запрос на два - не понятно
+    # потому что из первой таблиц мы должны брать
+    # имя и айди, а из воторой последню проверку и статус кода
 
     with get_connection() as connected:
         responce = get_all_db(connected, query)
         return responce
 
 
-def get_url_id(id):
-    url_id = f'''SELECT * FROM urls WHERE id = {id}'''
+get_all_url()
+
+
+def get_data_of_id(id):
+    query = f'''SELECT * FROM urls WHERE id = {id}'''
     with get_connection() as connection:
-        ids_urls = get_all_db(connection, url_id)
-        return ids_urls
+        data = get_all_db(connection, query)
+        return data
 
 
 def check_id(id):
@@ -42,7 +38,7 @@ def check_id(id):
         return id_checked
 
 
-def url_id(url_name):
+def get_data_of_name(url_name):
     query = f"SELECT id FROM urls WHERE name = '{url_name}'"
     with get_connection() as connection:
         id = get_one_db(connection, query)
@@ -51,14 +47,23 @@ def url_id(url_name):
         return id[0]
 
 
+def get_status_and_name(id):
+    query = f'''SELECT name FROM urls WHERE id={id}'''
+    with get_connection() as connection:
+        data_url = get_all_db(connection, query)
+        url_name = data_url[0][0]
+        url_status_code = get_status(connection, id)
+        return url_name, url_status_code
+
+
 def add_url(current_url):
-    sql_query = f'''INSERT INTO urls(name, created_at)
+    query = f'''INSERT INTO urls(name, created_at)
                         VALUES('{current_url}','{datetime.today()}')'''
     with get_connection() as connection:
-        insert_to_db(connection, sql_query)
+        insert_to_db(connection, query)
 
 
-def add_all(id, url_status_code, data_html):
+def add_checked(id, url_status_code, data_html):
     url_date = datetime.today()
     query = f'''INSERT INTO
                 url_checks(url_id, status_code, h1, title,
@@ -71,12 +76,3 @@ def add_all(id, url_status_code, data_html):
                         '{url_date}')'''
     with get_connection() as connection:
         insert_to_db(connection, query)
-
-
-def get_status_and_name(id):
-    query_select = f'''SELECT * FROM urls WHERE id={id}'''
-    with get_connection() as connection:
-        data_url = get_all_db(connection, query_select)
-        url_name = data_url[0][1]
-        url_status_code = get_status(connection, id)
-        return url_name, url_status_code

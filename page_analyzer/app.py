@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 
 from page_analyzer.checks_request import get_data_html
 from page_analyzer.validate import is_valid, get_normalize_domain
-from page_analyzer.routes import get_all_url, get_url_id, check_id, \
-    url_id, add_url, get_status_and_name, add_all
+from page_analyzer.routes import get_all_url, get_data_of_id, check_id, \
+    get_data_of_name, add_url, get_status_and_name, add_checked
 
 app = Flask(__name__)
 load_dotenv()
@@ -33,7 +33,7 @@ def post_sites():
     data = request.form.to_dict()
     url = data['url']
     current_url = get_normalize_domain(url)
-    id = url_id(current_url)
+    id = get_data_of_name(current_url)
     errors = is_valid(data)
 
     if errors:
@@ -46,13 +46,13 @@ def post_sites():
 
     add_url(current_url)
     flash("Страница успешно добавлена", 'alert alert-success')
-    id = url_id(current_url)
+    id = get_data_of_name(current_url)
     return redirect(url_for('id_sites', id=id))
 
 
 @app.route("/urls/<int:id>", methods=["POST", "GET"])
 def id_sites(id):
-    data_of_id = get_url_id(id)
+    data_of_id = get_data_of_id(id)
 
     if not data_of_id:
         return render_template('error.html'), 200
@@ -74,7 +74,7 @@ def url_checks(id):
 
     data_html = get_data_html(url_name)
 
-    add_all(id, url_status_code, data_html)
+    add_checked(id, url_status_code, data_html)
     flash('Страница успешно проверена', 'alert alert-success')
 
     return redirect(url_for('id_sites', id=id))
