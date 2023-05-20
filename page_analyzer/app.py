@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from page_analyzer.checks_request import get_data_html
 from page_analyzer.validate import is_valid, get_normalize_domain
-from page_analyzer.routes import get_all_url, get_url_id, check_id,\
+from page_analyzer.routes import get_all_url, get_url_id, check_id, \
     url_id, add_url, get_status_and_name, add_all
 
 app = Flask(__name__)
@@ -46,6 +46,7 @@ def post_sites():
 
     add_url(current_url)
     flash("Страница успешно добавлена", 'alert alert-success')
+    id = url_id(current_url)
     return redirect(url_for('id_sites', id=id))
 
 

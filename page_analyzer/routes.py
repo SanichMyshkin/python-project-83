@@ -43,12 +43,12 @@ def check_id(id):
 
 
 def url_id(url_name):
-    query = f"SELECT * FROM urls WHERE name = '{url_name}'"
+    query = f"SELECT id FROM urls WHERE name = '{url_name}'"
     with get_connection() as connection:
-        id = get_one_db(connection, query)[0]
-        if id:
-            return id[0]
-        return None
+        id = get_one_db(connection, query)
+        if id is None:
+            return None
+        return id[0]
 
 
 def add_url(current_url):
