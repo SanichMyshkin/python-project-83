@@ -21,13 +21,6 @@ def is_valid(item):
     return errors
 
 
-'''    if db:
-        for url in db:
-            if current_url == url[0]:
-                errors['name'] = 'Страница уже существует'
-                errors['id'] = existing_id[0][0]'''
-
-
 def get_normalize_domain(url):
     scheme = urlparse(url).scheme
     hostname = urlparse(url).hostname
