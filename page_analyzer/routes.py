@@ -5,12 +5,14 @@ from page_analyzer.checks_request import get_status
 
 
 def get_all_url():
-    query = '''SELECT urls.id, urls.name, url_checks.created_at, url_checks.status_code
-                            FROM urls LEFT JOIN (
-                                SELECT DISTINCT ON (url_id) url_id, created_at, status_code
-                                FROM url_checks
-                                ORDER BY url_id, created_at DESC) AS url_checks ON urls.id = url_checks.url_id
-                            ORDER BY urls.id DESC'''
+    query = '''SELECT urls.id, urls.name,
+                    url_checks.created_at, url_checks.status_code
+                    FROM urls LEFT JOIN (
+                    SELECT DISTINCT ON (url_id) url_id, created_at, status_code
+                    FROM url_checks
+                    ORDER BY url_id, created_at DESC) AS url_checks
+                    ON urls.id = url_checks.url_id
+                    ORDER BY urls.id DESC'''
     # как разделить этот запрос на два - не понятно
     # потому что из первой таблиц мы должны брать
     # имя и айди, а из воторой последню проверку и статус кода
