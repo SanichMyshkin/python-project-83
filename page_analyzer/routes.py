@@ -1,93 +1,80 @@
-from page_analyzer.connected import get_connection
-from datetime import datetime
-from page_analyzer.checks_request import get_status
+from flask import render_template, \
+    flash, request, redirect, url_for, Blueprint
+
+from page_analyzer.checks_request import get_data_html
+from page_analyzer.validate import is_valid, get_normalize_domain
+from page_analyzer.models import get_all_url, get_data_of_id, check_id, \
+    get_data_of_name, add_url, get_status_and_name, add_checked
+
+blue_app = Blueprint('blue_app', __name__)
 
 
-def get_all_url():
-    query = '''SELECT urls.id, urls.name,
-                    url_checks.created_at, url_checks.status_code
-                    FROM urls LEFT JOIN (
-                    SELECT DISTINCT ON (url_id) url_id, created_at, status_code
-                    FROM url_checks
-                    ORDER BY url_id, created_at DESC) AS url_checks
-                    ON urls.id = url_checks.url_id
-                    ORDER BY urls.id DESC'''
-    with get_connection() as connected:
-        responce = get_all_db(connected, query)
-        return responce
+# @app.route('/', methods=['GET'])
+@blue_app.route('/', methods=["GET"])
+def index():
+    data = []
+    return render_template('index.html',
+                           data=data), 200
 
 
-def get_data_of_id(id):
-    query = f'''SELECT * FROM urls WHERE id = {id}'''
-    with get_connection() as connection:
-        data = get_all_db(connection, query)
-        return data
+# @app.route('/urls', methods=["GET"])
+@blue_app.route('/urls', methods=["GET"])
+def get_sites():
+    responce = get_all_url()
+    return render_template('urls.html',
+                           data=responce)
 
 
-def check_id(id):
-    url_id_check = f'''SELECT * FROM url_checks WHERE url_id = {id}
-                           ORDER BY id DESC'''
-    with get_connection() as connection:
-        id_checked = get_all_db(connection, url_id_check)
-        return id_checked
+# @app.route('/urls', methods=["POST"])
+@blue_app.route('/urls', methods=["POST"])
+def post_sites():
+    data = request.form.to_dict()
+    url = data['url']
+    current_url = get_normalize_domain(url)
+    id = get_data_of_name(current_url)
+    errors = is_valid(data)
+
+    if errors:
+        flash(f"{errors['name']}", 'alert alert-danger')
+        return render_template("index.html",
+                               data=current_url), 422
+    if id:
+        flash('Страница уже существует', 'alert alert-info')
+        return redirect(url_for('id_sites', id=id))
+
+    add_url(current_url)
+    flash("Страница успешно добавлена", 'alert alert-success')
+    id = get_data_of_name(current_url)
+    return redirect(url_for('id_sites', id=id))
 
 
-def get_data_of_name(url_name):
-    query = f"SELECT id FROM urls WHERE name = '{url_name}'"
-    with get_connection() as connection:
-        id = get_one_db(connection, query)
-        if id is None:
-            return None
-        return id[0]
+# @app.route("/urls/<int:id>", methods=["POST", "GET"])
+@blue_app.route("/urls/<int:id>", methods=["POST", "GET"])
+def id_sites(id):
+    data_of_id = get_data_of_id(id)
+
+    if not data_of_id:
+        return render_template('error.html'), 200
+
+    id_checked = check_id(id)
+    return render_template("url_id.html",
+                           id=id,
+                           data=data_of_id,
+                           checks=id_checked)
 
 
-def get_status_and_name(id):
-    query = f'''SELECT name FROM urls WHERE id={id}'''
-    with get_connection() as connection:
-        data_url = get_all_db(connection, query)
-        url_name = data_url[0][0]
-        url_status_code = get_status(connection, id)
-        return url_name, url_status_code
+# @app.post('/urls/<int:id>/checks')
+@blue_app.post('/urls/<int:id>/checks')
+def url_checks(id):
+    url_name, url_status_code = get_status_and_name(id)
 
+    if url_status_code != 200:
+        flash('Произошла ошибка при проверке', 'alert alert-danger')
+        return redirect(url_for('id_sites', id=id, code=422))
 
-def add_url(current_url):
-    query = f'''INSERT INTO urls(name, created_at)
-                        VALUES('{current_url}','{datetime.today()}')'''
-    with get_connection() as connection:
-        insert_to_db(connection, query)
+    data_html = get_data_html(url_name)
 
+    add_checked(id, url_status_code, data_html)
+    flash('Страница успешно проверена', 'alert alert-success')
 
-def add_checked(id, url_status_code, data_html):
-    url_date = datetime.today()
-    query = f'''INSERT INTO
-                url_checks(url_id, status_code, h1, title,
-                            description, created_at)
-                VALUES({id},
-                        {url_status_code},
-                        '{data_html["h1"]}',
-                        '{data_html["title"]}',
-                        '{data_html["description"]}',
-                        '{url_date}')'''
-    with get_connection() as connection:
-        insert_to_db(connection, query)
-
-
-def get_all_db(connection, query):
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        response = cursor.fetchall()
-        return response
-
-
-def get_one_db(connection, query):
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        response = cursor.fetchone()
-        return response
-
-
-def insert_to_db(connection, query):
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-
-        connection.commit()
+    return redirect(url_for('id_sites', id=id))
