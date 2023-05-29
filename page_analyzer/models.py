@@ -2,33 +2,31 @@ from page_analyzer.db import get_connection
 from datetime import datetime
 from page_analyzer.checks_request import get_status
 
-
+'''
 def get_all_url():
-    query = '''SELECT urls.id, urls.name,
+    query = SELECT urls.id, urls.name,
                     url_checks.created_at, url_checks.status_code
                     FROM urls LEFT JOIN (
                     SELECT DISTINCT ON (url_id) url_id, created_at, status_code
                     FROM url_checks
                     ORDER BY url_id, created_at DESC) AS url_checks
                     ON urls.id = url_checks.url_id
-                    ORDER BY urls.id DESC'''
+                    ORDER BY urls.id DESC
     with get_connection() as connected:
         responce = get_all_db(connected, query)
         return responce
-
-
 '''
+
+
 def get_all_url(conn):
-    query = SELECT urls.id, urls.name,
+    query = '''SELECT urls.id, urls.name,
         url_checks.created_at, url_checks.status_code
     FROM urls LEFT JOIN (
         SELECT DISTINCT ON (url_id) url_id, created_at, status_code
     FROM url_checks ORDER BY url_id, created_at DESC)
-    AS url_checks ON urls.id = url_checks.url_id ORDER BY urls.id DESC
+    AS url_checks ON urls.id = url_checks.url_id ORDER BY urls.id DESC'''
     conn.execute(query)
     return conn.fetchall()
-
-'''
 
 
 def get_data_of_id(id):

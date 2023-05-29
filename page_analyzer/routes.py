@@ -1,6 +1,7 @@
 from flask import render_template, \
     flash, request, redirect, url_for, Blueprint
 
+from page_analyzer.db import get_connection
 from page_analyzer.checks_request import get_data_html
 from page_analyzer.validate import is_valid, get_normalize_domain
 from page_analyzer.models import get_all_url, get_data_of_id, check_id, \
@@ -9,7 +10,6 @@ from page_analyzer.models import get_all_url, get_data_of_id, check_id, \
 blue_app = Blueprint('blue_app', __name__)
 
 
-# @app.route('/', methods=['GET'])
 @blue_app.route('/', methods=["GET"])
 def index():
     data = []
@@ -17,15 +17,14 @@ def index():
                            data=data), 200
 
 
-# @app.route('/urls', methods=["GET"])
 @blue_app.route('/urls', methods=["GET"])
 def get_sites():
-    responce = get_all_url()
-    return render_template('urls.html',
-                           data=responce)
+    with get_connection() as conn:
+        responce = get_all_url(conn.cursor())
+        return render_template('urls.html',
+                               data=responce)
 
 
-# @app.route('/urls', methods=["POST"])
 @blue_app.route('/urls', methods=["POST"])
 def post_sites():
     data = request.form.to_dict()
@@ -48,7 +47,6 @@ def post_sites():
     return redirect(url_for('blue_app.id_sites', id=id))
 
 
-# @app.route("/urls/<int:id>", methods=["POST", "GET"])
 @blue_app.route("/urls/<int:id>", methods=["POST", "GET"])
 def id_sites(id):
     data_of_id = get_data_of_id(id)
@@ -63,7 +61,6 @@ def id_sites(id):
                            checks=id_checked)
 
 
-# @app.post('/urls/<int:id>/checks')
 @blue_app.post('/urls/<int:id>/checks')
 def url_checks(id):
     url_name, url_status_code = get_status_and_name(id)
