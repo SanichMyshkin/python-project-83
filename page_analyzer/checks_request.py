@@ -1,11 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
-from page_analyzer.routes import get_all_db
 
 
 def get_status(con, id):
     url = f"SELECT name FROM urls WHERE id={id}"
-    url_name = get_all_db(con, url)
+    with con.cursor() as cursor:
+        cursor.execute(url)
+        url_name = cursor.fetchall()
     try:
         r = requests.get(url_name[0][0])
     except Exception as _ex:
