@@ -40,12 +40,12 @@ def post_sites():
                                data=current_url), 422
     if id:
         flash('Страница уже существует', 'alert alert-info')
-        return redirect(url_for('id_sites', id=id))
+        return redirect(url_for('blue_app.id_sites', id=id))
 
     add_url(current_url)
     flash("Страница успешно добавлена", 'alert alert-success')
     id = get_data_of_name(current_url)
-    return redirect(url_for('id_sites', id=id))
+    return redirect(url_for('blue_app.id_sites', id=id))
 
 
 # @app.route("/urls/<int:id>", methods=["POST", "GET"])
@@ -70,11 +70,11 @@ def url_checks(id):
 
     if url_status_code != 200:
         flash('Произошла ошибка при проверке', 'alert alert-danger')
-        return redirect(url_for('id_sites', id=id, code=422))
+        return redirect(url_for('blue_app.id_sites', id=id, code=422))
 
     data_html = get_data_html(url_name)
 
     add_checked(id, url_status_code, data_html)
     flash('Страница успешно проверена', 'alert alert-success')
 
-    return redirect(url_for('id_sites', id=id))
+    return redirect(url_for('blue_app.id_sites', id=id))
