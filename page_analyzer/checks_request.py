@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from page_analyzer.models import get_all_db
+from page_analyzer.routes import get_all_db
 
 
 def get_status(con, id):

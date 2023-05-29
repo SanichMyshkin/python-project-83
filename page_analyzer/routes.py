@@ -1,5 +1,4 @@
 from page_analyzer.connected import get_connection
-from page_analyzer.models import get_all_db, get_one_db, insert_to_db
 from datetime import datetime
 from page_analyzer.checks_request import get_status
 
@@ -13,16 +12,9 @@ def get_all_url():
                     ORDER BY url_id, created_at DESC) AS url_checks
                     ON urls.id = url_checks.url_id
                     ORDER BY urls.id DESC'''
-    # как разделить этот запрос на два - не понятно
-    # потому что из первой таблиц мы должны брать
-    # имя и айди, а из воторой последню проверку и статус кода
-
     with get_connection() as connected:
         responce = get_all_db(connected, query)
         return responce
-
-
-get_all_url()
 
 
 def get_data_of_id(id):
@@ -78,3 +70,24 @@ def add_checked(id, url_status_code, data_html):
                         '{url_date}')'''
     with get_connection() as connection:
         insert_to_db(connection, query)
+
+
+def get_all_db(connection, query):
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        response = cursor.fetchall()
+        return response
+
+
+def get_one_db(connection, query):
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        response = cursor.fetchone()
+        return response
+
+
+def insert_to_db(connection, query):
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+
+        connection.commit()
