@@ -26,8 +26,9 @@ def check_id(id):
     url_id_check = f'''SELECT * FROM url_checks WHERE url_id = {id}
                            ORDER BY id DESC'''
     with get_connection() as connection:
-        id_checked = get_all_db(connection, url_id_check)
-        return id_checked
+        cursor = connection.cursor()
+        cursor.execute(url_id_check)
+        return cursor.fetchall()
 
 
 def get_data_of_name(url_name):
