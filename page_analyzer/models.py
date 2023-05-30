@@ -57,7 +57,9 @@ def add_url(current_url):
     query = f'''INSERT INTO urls(name, created_at)
                         VALUES('{current_url}','{datetime.today()}')'''
     with get_connection() as connection:
-        insert_to_db(connection, query)
+        cursor = connection.cursor()
+        cursor.execute(query)
+        connection.commit()
 
 
 def add_checked(id, url_status_code, data_html):
@@ -72,10 +74,6 @@ def add_checked(id, url_status_code, data_html):
                         '{data_html["description"]}',
                         '{url_date}')'''
     with get_connection() as connection:
-        insert_to_db(connection, query)
-
-
-def insert_to_db(connection, query):
-    with connection.cursor() as cursor:
+        cursor = connection.cursor()
         cursor.execute(query)
         connection.commit()
