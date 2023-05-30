@@ -34,7 +34,9 @@ def check_id(id):
 def get_data_of_name(url_name):
     query = f"SELECT id FROM urls WHERE name = '{url_name}'"
     with get_connection() as connection:
-        id = get_one_db(connection, query)
+        cursor = connection.cursor()
+        cursor.execute(query)
+        id = cursor.fetchone()
         if id is None:
             return None
         return id[0]
@@ -73,15 +75,7 @@ def add_checked(id, url_status_code, data_html):
         insert_to_db(connection, query)
 
 
-def get_one_db(connection, query):
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        response = cursor.fetchone()
-        return response
-
-
 def insert_to_db(connection, query):
     with connection.cursor() as cursor:
         cursor.execute(query)
-
         connection.commit()
