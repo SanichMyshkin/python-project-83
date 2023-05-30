@@ -43,7 +43,9 @@ def get_data_of_name(url_name):
 def get_status_and_name(id):
     query = f'''SELECT name FROM urls WHERE id={id}'''
     with get_connection() as connection:
-        data_url = get_all_db(connection, query)
+        cursor = connection.cursor()
+        cursor.execute(query)
+        data_url = cursor.fetchall()
         url_name = data_url[0][0]
         url_status_code = get_status(connection, id)
         return url_name, url_status_code
@@ -69,13 +71,6 @@ def add_checked(id, url_status_code, data_html):
                         '{url_date}')'''
     with get_connection() as connection:
         insert_to_db(connection, query)
-
-
-def get_all_db(connection, query):
-    with connection.cursor() as cursor:
-        cursor.execute(query)
-        response = cursor.fetchall()
-        return response
 
 
 def get_one_db(connection, query):
