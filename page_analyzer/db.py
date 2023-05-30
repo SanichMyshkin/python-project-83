@@ -40,14 +40,4 @@ def get_connection():
             conn_pool.putconn(conn)
 
 
-@contextmanager
-def get_cursor():
-    with get_connection() as conn:
-        cursor = conn.cursor()
-        try:
-            yield cursor
-        finally:
-            cursor.close()
-
-
 conn_pool = create_pool()
