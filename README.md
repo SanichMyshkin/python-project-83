@@ -55,6 +55,12 @@ git clone git@github.com:SanichMyshkin/python-project-83.git
 cd python-project-83
 ```
 
+
+
+---
+
+## Usage without docker
+
 Then you have to install all necessary dependencies:
 
 ```bash
@@ -62,15 +68,14 @@ make install
 ```
 
 Create .env file in the root folder and add following variables:
-```
-DATABASE_URL = postgresql://{provider}://{user}:{password}@{host}:{port}/{db}
+```bash
+DATABASE_URL = 'postgresql://{provider}://{user}:{password}@{host}:{port}/page_analyzer'
 SECRET_KEY = '{your secret key}'
 ```
-Run commands from `database.sql` to create the required tables.
-
----
-
-## Usage
+To create a database, run the command 
+```bash
+make datadase
+```
 
 Start the gunicorn Flask server by running:
 ```bash
@@ -82,4 +87,21 @@ _It is also possible to start it local in development mode with debugger active 
 ```bash
 make dev
 ```
-_The dev server will be at http://127.0.0.1:5000._
+_The dev server will be at http://127.0.0.1:8000_
+
+-- 
+
+## Using Docker
+
+If you want to use the application using docker, then you need to create a .env.docker file with the following data
+```bash
+DATABASE_URL = 'postgres://{provider}://{user}:{password}@db:{port}/page_analyzer'
+SECRET_KEY = '{your secret key}'
+```
+
+Once filled in, run the command 
+```bash
+make docker
+```
+
+By default, the server will be available at http://0.0.0.0:8000

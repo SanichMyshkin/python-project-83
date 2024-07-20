@@ -52,7 +52,7 @@ def id_sites(id):
     data_of_id = get_data_of_id(id)
 
     if not data_of_id:
-        return render_template('error.html'), 200
+        return render_template('error.html'), 302
 
     id_checked = check_id(id)
     return render_template("url_id.html",

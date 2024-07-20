@@ -9,24 +9,31 @@ start:
 debug:
 	flask --app page_analyzer/app --debug run
 
-
-
-# Комады сборки проекта
-pu:
-	git add .
-	git commit -m "fix"
-	git push
-
-package-install:
-	python3 -m pip install --user --force dist/*.whl
-
-build:
-	poetry build
-
 install:
 	poetry install
 
 lint:
-	poetry run flake8
+	poetry run flake8 --exclude=.venv/
 
-push: build package-install install
+
+# создание шаблона базы данных
+database: db-create schema-load
+
+db-create:
+	createdb page_analyzer
+
+schema-load:
+	psql page_analyzer < database.sql
+
+
+# docker 
+build:
+	docker build -t page_analyzer .
+
+run:
+	docker run -it -p 8000:8000 page_analyzer
+# docker run --platform=linux/amd64 --name page_analyzer_container -p 8000:8000 page_analyzer
+
+docker:
+	docker compose up
+
