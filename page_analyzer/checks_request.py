@@ -3,15 +3,20 @@ from bs4 import BeautifulSoup
 
 
 def get_status(con, id):
-    url = f"SELECT name FROM urls WHERE id={id}"
+    query = "SELECT name FROM urls WHERE id = %s"
     with con.cursor() as cursor:
-        cursor.execute(url)
-        url_name = cursor.fetchall()
+        cursor.execute(query, (id,))
+        url_name = cursor.fetchone()
+    
+    if not url_name:
+        return "URL not found"
+
+    url = url_name[0]
     try:
-        r = requests.get(url_name[0][0])
-    except Exception as _ex:
-        return _ex
-    return r.status_code
+        r = requests.get(url)
+        return r.status_code
+    except requests.RequestException as ex:
+        return str(ex)
 
 
 def get_data_html(url):
@@ -21,16 +26,21 @@ def get_data_html(url):
         'description': ''
     }
 
-    r = requests.get(url)
-    html_doc = r.text
-    soup = BeautifulSoup(html_doc, 'html.parser')
+    try:
+        r = requests.get(url)
+        r.raise_for_status()
+        html_doc = r.text
+        soup = BeautifulSoup(html_doc, 'html.parser')
 
-    if soup.h1:
-        data['h1'] = soup.h1.text.strip()
-    if soup.title:
-        data['title'] = soup.title.text.strip()
-    if soup.find_all(attrs={"name": "description"}):
-        description = soup.find_all(attrs={"name": "description"})[0]
-        data['description'] = description['content'].strip()
+        if soup.h1:
+            data['h1'] = soup.h1.text.strip()
+        if soup.title:
+            data['title'] = soup.title.text.strip()
+        if soup.find('meta', attrs={"name": "description"}):
+            description = soup.find('meta', attrs={"name": "description"})
+            data['description'] = description.get('content', '').strip()
+
+    except requests.RequestException as ex:
+        print(f"Error fetching URL: {ex}")
 
     return data

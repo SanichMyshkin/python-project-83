@@ -15,27 +15,27 @@ def get_all_url(conn):
 
 
 def get_data_of_id(id):
-    query = f'''SELECT * FROM urls WHERE id = {id}'''
+    query = '''SELECT * FROM urls WHERE id = %s'''
     with get_connection() as connection:
         cursor = connection.cursor()
-        cursor.execute(query)
+        cursor.execute(query, (id,))
         return cursor.fetchall()
 
 
 def check_id(id):
-    url_id_check = f'''SELECT * FROM url_checks WHERE url_id = {id}
-                           ORDER BY id DESC'''
+    url_id_check = '''SELECT * FROM url_checks WHERE url_id = %s
+                      ORDER BY id DESC'''
     with get_connection() as connection:
         cursor = connection.cursor()
-        cursor.execute(url_id_check)
+        cursor.execute(url_id_check, (id,))
         return cursor.fetchall()
 
 
 def get_data_of_name(url_name):
-    query = f"SELECT id FROM urls WHERE name = '{url_name}'"
+    query = "SELECT id FROM urls WHERE name = %s"
     with get_connection() as connection:
         cursor = connection.cursor()
-        cursor.execute(query)
+        cursor.execute(query, (url_name,))
         id = cursor.fetchone()
         if id is None:
             return None
@@ -43,10 +43,10 @@ def get_data_of_name(url_name):
 
 
 def get_status_and_name(id):
-    query = f'''SELECT name FROM urls WHERE id={id}'''
+    query = '''SELECT name FROM urls WHERE id = %s'''
     with get_connection() as connection:
         cursor = connection.cursor()
-        cursor.execute(query)
+        cursor.execute(query, (id,))
         data_url = cursor.fetchall()
         url_name = data_url[0][0]
         url_status_code = get_status(connection, id)
@@ -54,26 +54,26 @@ def get_status_and_name(id):
 
 
 def add_url(current_url):
-    query = f'''INSERT INTO urls(name, created_at)
-                        VALUES('{current_url}','{datetime.today()}')'''
+    query = '''INSERT INTO urls(name, created_at)
+               VALUES(%s, %s)'''
     with get_connection() as connection:
         cursor = connection.cursor()
-        cursor.execute(query)
+        cursor.execute(query, (current_url, datetime.today()))
         connection.commit()
 
 
 def add_checked(id, url_status_code, data_html):
     url_date = datetime.today()
-    query = f'''INSERT INTO
+    query = '''INSERT INTO
                 url_checks(url_id, status_code, h1, title,
-                            description, created_at)
-                VALUES({id},
-                        {url_status_code},
-                        '{data_html["h1"]}',
-                        '{data_html["title"]}',
-                        '{data_html["description"]}',
-                        '{url_date}')'''
+                           description, created_at)
+               VALUES(%s, %s, %s, %s, %s, %s)'''
     with get_connection() as connection:
         cursor = connection.cursor()
-        cursor.execute(query)
+        cursor.execute(query, (id,
+                               url_status_code,
+                               data_html["h1"],
+                               data_html["title"],
+                               data_html["description"],
+                               url_date))
         connection.commit()
