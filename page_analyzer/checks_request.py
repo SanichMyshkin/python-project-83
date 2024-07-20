@@ -7,7 +7,6 @@ def get_status(con, id):
     with con.cursor() as cursor:
         cursor.execute(query, (id,))
         url_name = cursor.fetchone()
-    
     if not url_name:
         return "URL not found"
 
@@ -42,5 +41,4 @@ def get_data_html(url):
 
     except requests.RequestException as ex:
         print(f"Error fetching URL: {ex}")
-
     return data
